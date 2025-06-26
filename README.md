@@ -1,6 +1,9 @@
 # Dailier
 
 Dailier is a simple web app to Create, and Track your habit daily, and even getting your Badge
+and Achievements.
+
+You'll be able to set your Habit Streak on fire for days and keep them on track with this app
 
 ## Stay Tuned!
 The project is still under development, and it's main purpose is for experimenting and gaining hands on
