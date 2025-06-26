@@ -1,0 +1,27 @@
+{
+  "name": "dailier",
+  "version": "1.0.0",
+  "description": "Daily Habit Tracker app",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AldrichMatt/dailier.git"
+  },
+  "keywords": [
+    "express",
+    "react",
+    "tailwind",
+    "rest",
+    "api",
+    "postgresql"
+  ],
+  "author": "Aldrichmatt",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AldrichMatt/dailier/issues"
+  },
+  "homepage": "https://github.com/AldrichMatt/dailier#readme"
+}
