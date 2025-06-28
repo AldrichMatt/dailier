@@ -1,3 +1,5 @@
+import { userController } from "./userController";
+
 export const loginUser = (req, res) => {
   const { email, password } = req.body;
 
