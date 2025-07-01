@@ -3,6 +3,7 @@ import { PhotoIcon, UserCircleIcon } from '@heroicons/react/24/solid'
 import { ChevronDownIcon } from '@heroicons/react/16/solid'
 import React, {useState} from "react";
 import axios from 'axios';
+import { logDOM } from "@testing-library/dom";
 
 
 
@@ -21,7 +22,10 @@ const Login = () => {
           "Content-Type" : 'application/json'
         }
       });
-    console.log('Server response:', response.data);
+      
+      //status validasi login
+      const status = response.data.status;
+      console.log(status);
   };
   return (
     <>

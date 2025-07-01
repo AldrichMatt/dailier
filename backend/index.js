@@ -1,6 +1,6 @@
 import express from "express";
 import cors from "cors";
-import { loginUser } from "./controllers/authController.js";
+import { loginUser } from "./controllers/userController.js";
 
 const app = express();
 const PORT = 5000;
