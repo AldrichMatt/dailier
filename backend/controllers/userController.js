@@ -1,4 +1,5 @@
 import { auth } from "./authController.js";
+import { getAllUser } from "../models/userModel.js";
 
 export const loginUser = async (req, res) => {
     const email = req.body.email;
@@ -13,13 +14,13 @@ export const loginUser = async (req, res) => {
             });
             break;
         case '404':
-            res.status().json({
+            res.json({
                 message : "Email not found!",
                 status : result.status
             });
             break;
         case '200':
-            res.status().json({
+            res.json({
                 message : "Logged in successfully!",
                 status : result.status
             });
@@ -28,4 +29,10 @@ export const loginUser = async (req, res) => {
             break;
     }
 
+}
+
+export const getUsers = async (req,res) => {
+    const userData = await getAllUser();
+    console.log(userData);
+    res.json(userData);
 }

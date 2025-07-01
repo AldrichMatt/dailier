@@ -15,3 +15,5 @@ experience with front-end and back-end development
 - Stylesheet : Tailwind CSS
 - API : RESTful API
 - DBMS : PostgreSQL
+- Form Validation : Joi
+- Password Hashing : Bcrypt

@@ -6,6 +6,7 @@ dotenv.config();
 const pgp = pgPromise();
 export const db = pgp(process.env.DATABASE_URL)
 
-db.one('SELECT 1')
-  .then(() => console.log('✅ PostgreSQL connected!'))
-  .catch(err => console.error('❌ Connection failed:', err));
+// for checking database connection only
+// db.one('SELECT 1')
+//   .then(() => console.log('✅ PostgreSQL connected!'))
+//   .catch(err => console.error('❌ Connection failed:', err));
