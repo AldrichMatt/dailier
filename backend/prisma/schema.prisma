@@ -1,0 +1,65 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum frequency{
+  DAILY
+  WEEKLY
+  MONTHLY
+  YEARLY
+}
+
+model users {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  username  String   @unique
+  password  String
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now())
+
+  habits habits[]
+  badges badges[]
+}
+
+model habits{
+  id Int @id @default(autoincrement())
+  user users @relation(fields: [user_id], references: [id])
+  user_id Int @map("user_id")
+  title String 
+  description String?
+  frequency frequency @default(DAILY)
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now())
+
+  
+
+  habit_checkins habit_checkins[]
+}
+
+model habit_checkins{
+  id Int @id @default(autoincrement())
+  habit habits @relation(fields: [habit_id], references: [id])
+  habit_id Int @map("habit_id")
+  checkin_datetime DateTime @default(now())
+  completed Boolean @default(false)
+}
+
+model badges{
+  id Int @id @default(autoincrement())
+  user users @relation(fields: [user_id], references: [id])
+  user_id Int @map("user_id")
+  name String 
+  earned_at DateTime @default(now())
+}
