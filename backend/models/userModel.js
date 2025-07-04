@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import { getTimestamps } from "./abstract.js";
 
 const prisma = new PrismaClient();
 
@@ -29,11 +30,13 @@ export const getUserbyEmail = async (email) => {
 }
 
 export const registerUser = (username, email, password) => {
+  const created_at = getTimestamps().created_at;
   return prisma.users.create({
     data: {
       email : email,
       username : username,
-      password : password
+      password : password,
+      created_at : created_at
     },
     select :{
       id : true,

@@ -25,7 +25,7 @@ model users {
   email     String   @unique
   username  String   @unique
   password  String   
-  created_at DateTime @default(now())
+  created_at DateTime 
   updated_at DateTime @default(now())
 
   habits habits[]
@@ -39,7 +39,7 @@ model habits{
   title String 
   description String?
   frequency frequency @default(DAILY)
-  created_at DateTime @default(now())
+  created_at DateTime 
   updated_at DateTime @default(now())
 
   
