@@ -1,14 +1,45 @@
 import { db } from "./Model.js";
-import { getTimestamps } from "./abstract.js";
+import { PrismaClient } from "@prisma/client";
 
-export const getAllUser = () => {
-    return db.manyOrNone("SELECT * FROM users");
+const prisma = new PrismaClient();
+
+export const getAllUser = async () => {
+  return await prisma.users.findMany(
+    {select : 
+      { id : true,
+        email : true, 
+        username : true
+      }
+    }
+  );
 }
 
-export const getUserbyEmail = (email) => {
-  return db.oneOrNone("SELECT * FROM users WHERE email = $1", [email]);
+export const getUserbyEmail = async (email) => {
+  return await prisma.users.findUnique({
+    select : {
+      id : true,
+      username : true,
+      email : true
+    },
+    where : {
+      email : {
+        equal : email
+      }
+    }
+  })
 }
 
 export const registerUser = (username, email, password) => {
-  return db.query("INSERT INTO users (email, username, password) VALUES ($1, $2, $3)", [email, username, password])
+  return prisma.users.create({
+    data: {
+      email : email,
+      username : username,
+      password : password
+    },
+    select :{
+      id : true,
+      username : true,
+      email : true
+    }
+  })
 }

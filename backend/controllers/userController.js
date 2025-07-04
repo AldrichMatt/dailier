@@ -1,6 +1,10 @@
 import { auth } from "./authController.js";
 import { getAllUser, registerUser } from "../models/userModel.js";
 import { schema } from "./authController.js";
+import Joi from "joi";
+import pkg from 'joi';
+
+const { optional } = pkg
 
 
 
@@ -8,8 +12,13 @@ export const loginUser = async (req, res) => {
     const email = req.body.email;
     const password = req.body.password;
 
-    const validation = schema.validate({
-    email : email
+    const partialSchema = schema.fork(
+        ['username', 'password', 'repassword'],
+        (field) => field.optional()
+    );
+
+    const validation = partialSchema.validate({
+        email : email
     })
 
     if(validation.error){
@@ -67,13 +76,23 @@ export const newUser = async (req, res) => {
         try {
             res.json(await registerUser(username, email, password));
         } catch (error) {
-            if (error.code == 23505) {
+            if (error.meta.target.includes("email")) {
                 res.json({
                     "message" : "Email sudah terdaftar",
-                    "code" : "23505"
+                    "code" : error.code
+                })
+            }else if(error.meta.target.includes("username")){
+                res.json({
+                    "message" : "Username sudah terdaftar",
+                    "code" : error.code
+                })
+            }else{
+                res.json({
+                    "message" : error.meta,
+                    "code" : error.code
                 })
             }
-            console.log(error.code);
+            console.log(error);
         }
     }
 
