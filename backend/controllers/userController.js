@@ -1,7 +1,6 @@
 import { auth } from "./authController.js";
 import { getAllUser, registerUser } from "../models/userModel.js";
-import { schema } from "./authController.js";
-import Joi from "joi";
+import { userSchema } from "../schema/user.js";
 import pkg from 'joi';
 
 const { optional } = pkg
@@ -12,7 +11,7 @@ export const loginUser = async (req, res) => {
     const email = req.body.email;
     const password = req.body.password;
 
-    const partialSchema = schema.fork(
+    const partialSchema = userSchema.fork(
         ['username', 'password', 'repassword'],
         (field) => field.optional()
     );
@@ -63,7 +62,7 @@ export const newUser = async (req, res) => {
     const username = req.body.username;
     const repassword = req.body.repassword;
 
-    const validate = schema.validate({
+    const validate = userSchema.validate({
         email : email,
         password : password,
         username : username,
