@@ -61,7 +61,7 @@ export const updateHabit = async (req, res) => {
         }
     }else{
         res.json({
-            message : "Habit not found"
+            "message" : "Habit not found"
         })
     }
 }

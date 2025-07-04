@@ -1,11 +1,9 @@
-import Joi from "joi";
-import { getUserbyEmail } from "../models/userModel.js"
-import { json } from "express";
+import { getByEmail } from "../models/userModel.js"
 
 
 export const auth = async ({email, password}) => {
 
-  const userData = await getUserbyEmail(email);  
+  const userData = await getByEmail(email);  
     if(userData == null){
       return {
         status : '404'

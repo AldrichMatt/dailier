@@ -3,7 +3,7 @@ import { getTimestamps } from "./abstract.js";
 
 const prisma = new PrismaClient();
 
-export const getAllUser = async () => {
+export const getAll = async () => {
   return await prisma.users.findMany({
     select : { 
       id : true,
@@ -14,7 +14,20 @@ export const getAllUser = async () => {
 );
 }
 
-export const getUserbyEmail = async (email) => {
+export const getById = async (id) => {
+  return await prisma.users.findUnique({
+    select : {
+      id : true,
+      username : true,
+      email : true
+    },
+    where : {
+      id : id
+    }
+  })
+}
+
+export const getByEmail = async (email) => {
   return await prisma.users.findUnique({
     select : {
       id : true,
@@ -29,7 +42,9 @@ export const getUserbyEmail = async (email) => {
   })
 }
 
-export const registerUser = (username, email, password) => {
+
+
+export const create = (username, email, password) => {
   const created_at = getTimestamps().created_at;
   return prisma.users.create({
     data: {
@@ -37,6 +52,26 @@ export const registerUser = (username, email, password) => {
       username : username,
       password : password,
       created_at : created_at
+    },
+    select :{
+      id : true,
+      username : true,
+      email : true
+    }
+  })
+}
+
+export const update = (user_id, username, email, password) => {
+  const updated_at = getTimestamps().updated_at;
+  return prisma.users.create({
+    data: {
+      email : email,
+      username : username,
+      password : password,
+      updated_at : updated_at
+    },
+    where :{
+      id : user_id
     },
     select :{
       id : true,

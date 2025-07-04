@@ -1,6 +1,6 @@
 import express from "express";
 import cors from "cors";
-import { loginUser, getUsers, newUser } from "./controllers/userController.js";
+import { loginUser, getUsers, newUser, updateUser } from "./controllers/userController.js";
 import { getHabits, newHabit, updateHabit } from "./controllers/habitController.js";
 
 const app = express();
@@ -16,8 +16,9 @@ app.get("/habits", getHabits);
 // REQUESTS FOR USERS
 app.post("/users/login", loginUser);
 app.post("/users/new", newUser)
+app.post("/users/update", updateUser)
 app.post("/habits/new", newHabit);
-app.put("/habits/update", updateHabit);
+app.post("/habits/update", updateHabit);
 
 
 

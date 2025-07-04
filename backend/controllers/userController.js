@@ -1,5 +1,5 @@
 import { auth } from "./authController.js";
-import { getAllUser, registerUser } from "../models/userModel.js";
+import { getAll, create, update, getById } from "../models/userModel.js";
 import { userSchema } from "../schema/user.js";
 import pkg from 'joi';
 
@@ -52,15 +52,12 @@ export const loginUser = async (req, res) => {
 }
 
 export const getUsers = async (req,res) => {
-    const userData = await getAllUser();
+    const userData = await getAll();
     res.json(userData);
 }
 
 export const newUser = async (req, res) => {
-    const email = req.body.email;
-    const password = req.body.password;
-    const username = req.body.username;
-    const repassword = req.body.repassword;
+    const {username, email, password, repassword} = req.body;
 
     const validate = userSchema.validate({
         email : email,
@@ -73,7 +70,7 @@ export const newUser = async (req, res) => {
         res.json(validate.error.details[0])
     }else{
         try {
-            res.json(await registerUser(username, email, password));
+            res.json(await create(username, email, password));
         } catch (error) {
             if (error.meta.target.includes("email")) {
                 res.json({
@@ -95,4 +92,36 @@ export const newUser = async (req, res) => {
         }
     }
 
+}
+
+export const updateUser = async (req, res) => {
+    const {user_id, username, email, password, repassword} = req.body;
+
+    const user = await getById(user_id);
+
+    if(user != null){   
+        const validate = userSchema.validate({
+            email : email,
+            password : password,
+            username : username,
+            repassword : repassword
+        })
+        
+        if(validate.error){
+        res.json(validate.error.details[0])
+    }else{
+        try {
+            res.json(await update(user_id, username, email, password));
+        } catch (error) {
+            res.json({
+                "message" : error.meta,
+                "code" : error.code
+            })
+            console.log(error);
+        }
+    }}else{
+        res.json({
+            "message" : "User not found!"
+        })
+    }
 }
