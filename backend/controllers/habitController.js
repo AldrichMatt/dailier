@@ -1,4 +1,4 @@
-import { create, getAll, getById, update} from "../models/habitModel.js";
+import { create, getAll, getById, remove, update} from "../models/habitModel.js";
 import { habitSchema } from "../schema/habit.js";
 
 export const getHabits = async (req, res) => {
@@ -62,6 +62,25 @@ export const updateHabit = async (req, res) => {
     }else{
         res.json({
             "message" : "Habit not found"
+        })
+    }
+}
+
+export const deleteHabit = async (req, res) => {
+    const {habit_id} = req.body;
+
+    const habit = await getById(habit_id)
+
+    console.log(habit);
+    try {
+        await remove(habit_id);
+        res.json({
+            message : "Habit " + habit.title + " Deleted successfully!"
+        })
+    } catch (error) {
+        res.json({
+            message : error.meta,
+            code : error.code
         })
     }
 }

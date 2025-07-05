@@ -72,3 +72,11 @@ export const update = async (habit_id, user_id, title, description, frequency) =
         }
     })
 }
+
+export const remove = async (habit_id) => {
+    return await prisma.habits.delete({
+        where : {
+            id : habit_id
+        }
+    })
+}
