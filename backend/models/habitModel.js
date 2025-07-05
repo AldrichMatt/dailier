@@ -3,7 +3,7 @@ import { getTimestamps } from "./abstract.js";
 
 const prisma = new PrismaClient();
 
-export const getAll = async () => {
+export const getAll = async (req) => {
     return await prisma.habits.findMany({
         select : {
             id : true,
@@ -11,6 +11,9 @@ export const getAll = async () => {
             title : true,
             description : true,
             frequency : true
+        },
+        where : {
+            user_id : req.session.user_id
         }
     })
 }
