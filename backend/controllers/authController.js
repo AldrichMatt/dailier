@@ -1,6 +1,5 @@
 import { getByEmail } from "../models/userModel.js"
 
-
 export const auth = async ({email, password}) => {
 
   const userData = await getByEmail(email);  
@@ -20,3 +19,25 @@ export const auth = async ({email, password}) => {
       status : '403'
     });
 };
+
+export const checksession = (req) => {
+  if(req.session.user_id){
+    return({
+      user_id : req.session.user_id
+    })
+  }else{
+    return({
+      message : "Please Login"
+    })
+  }
+}
+
+export const destroysession = (req, res) => {
+  req.session.destroy(err => {
+      if (err) {
+        res.json({ message: 'Logout failed' });
+      }else{
+        res.json({ message: 'Logged out' });
+      }
+    });
+}

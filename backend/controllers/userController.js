@@ -1,11 +1,13 @@
-import { auth } from "./authController.js";
+import { auth, checksession, destroysession } from "./authController.js";
 import { getAll, create, update, getById, remove } from "../models/userModel.js";
 import { userSchema } from "../schema/user.js";
 import pkg from 'joi';
 
 const { optional } = pkg
 
-
+export const checkUser = (req, res) => {
+    res.json(checksession(req));
+}
 
 export const loginUser = async (req, res) => {
     const email = req.body.email;
@@ -38,10 +40,12 @@ export const loginUser = async (req, res) => {
                 status : result.status
             });
             break;
-        case '200':
+        case '200':     
+            req.session.user_id = result.user.id
             res.json({
                 message : "Logged in successfully!",
-                status : result.status
+                status : result.status,
+                active_user : result.user.id
             });
             break;
         default:
@@ -49,6 +53,10 @@ export const loginUser = async (req, res) => {
     }
 }
 
+}
+
+export const logout = (req, res) => {
+    return destroysession(req, res);
 }
 
 export const getUsers = async (req,res) => {

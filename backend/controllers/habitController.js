@@ -2,7 +2,7 @@ import { create, getAll, getById, remove, update} from "../models/habitModel.js"
 import { habitSchema } from "../schema/habit.js";
 
 export const getHabits = async (req, res) => {
-    const habitsData = await getAll();
+    const habitsData = await getAll(req);
     res.json(habitsData);
 }
 

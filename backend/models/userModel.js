@@ -8,7 +8,8 @@ export const getAll = async () => {
     select : { 
       id : true,
       email : true, 
-      username : true
+      username : true,
+      password : true
     }
   }
 );
@@ -32,12 +33,11 @@ export const getByEmail = async (email) => {
     select : {
       id : true,
       username : true,
-      email : true
+      email : true,
+      password : true
     },
     where : {
-      email : {
-        equal : email
-      }
+      email : email
     }
   })
 }
