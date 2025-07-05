@@ -1,5 +1,5 @@
 import { auth } from "./authController.js";
-import { getAll, create, update, getById } from "../models/userModel.js";
+import { getAll, create, update, getById, remove } from "../models/userModel.js";
 import { userSchema } from "../schema/user.js";
 import pkg from 'joi';
 
@@ -122,6 +122,24 @@ export const updateUser = async (req, res) => {
     }}else{
         res.json({
             "message" : "User not found!"
+        })
+    }
+}
+
+export const deleteUser = async (req, res) => {
+    const { user_id } = req.body;
+
+    const user = await getById(user_id)
+
+    try {
+        await remove(user_id)
+        res.json({
+            message : "User " + user.username + " Deleted successfully!"
+        })
+    } catch (error) {
+         res.json({
+            message : error.meta,
+            code : error.code
         })
     }
 }
