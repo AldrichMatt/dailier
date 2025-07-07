@@ -42,7 +42,7 @@ app.get("/api/v1/logout", logout)
 
 app.get("/api/v1/habits", getHabits)
 app.post("/api/v1/habits", newHabit)
-// app.patch("/api/v1/habits/:id/checkin")
+app.patch("/api/v1/habits/:id/checkin")
 // app.get("/api/v1/progress/:habitId")
 
 

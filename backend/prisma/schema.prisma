@@ -52,7 +52,7 @@ model habit_checkins{
   habit habits @relation(fields: [habit_id], references: [id])
   habit_id Int @map("habit_id")
   checkin_datetime DateTime @default(now())
-  completed Boolean @default(false)
+  completed Boolean @default(true)
 }
 
 model badges{
