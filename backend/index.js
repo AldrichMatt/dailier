@@ -4,6 +4,7 @@ import { loginUser, getUsers, newUser, updateUser, deleteUser, checkUser, logout
 import { deleteHabit, getHabits, newHabit, updateHabit } from "./controllers/habitController.js";
 import session from "express-session";
 import dotenv from 'dotenv';
+import { checkin } from "./controllers/checkinController.js";
 
 dotenv.config();
 
@@ -25,6 +26,7 @@ app.use(session({
 
 // REQUESTS FOR ADMIN
 app.get("/users", getUsers)
+app.get("/users/check", checkUser)
 app.get("/habits", getHabits)
 
 app.post("/users/new", newUser)
@@ -42,7 +44,7 @@ app.get("/api/v1/logout", logout)
 
 app.get("/api/v1/habits", getHabits)
 app.post("/api/v1/habits", newHabit)
-app.patch("/api/v1/habits/:id/checkin")
+app.get("/api/v1/habits/:id/checkin", checkin)
 // app.get("/api/v1/progress/:habitId")
 
 

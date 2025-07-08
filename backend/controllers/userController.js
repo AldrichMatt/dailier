@@ -6,12 +6,12 @@ import pkg from 'joi';
 const { optional } = pkg
 
 export const checkUser = (req, res) => {
-    res.json(checksession(req));
+    const {user_id} = checksession(req, res);
+    return(user_id) //return null if user not logged in, else return integer
 }
 
 export const loginUser = async (req, res) => {
-    const email = req.body.email;
-    const password = req.body.password;
+    const {email, password} = req.body;
 
     const partialSchema = userSchema.fork(
         ['username', 'password', 'repassword'],
@@ -78,24 +78,14 @@ export const newUser = async (req, res) => {
         res.json(validate.error.details[0])
     }else{
         try {
-            res.json(await create(username, email, password));
+            const user = await create(username, email, password)
+            req.session.user_id = user.id
+            res.json(user);
         } catch (error) {
-            if (error.meta.target.includes("email")) {
-                res.json({
-                    "message" : "Email sudah terdaftar",
-                    "code" : error.code
-                })
-            }else if(error.meta.target.includes("username")){
-                res.json({
-                    "message" : "Username sudah terdaftar",
-                    "code" : error.code
-                })
-            }else{
                 res.json({
                     "message" : error.meta,
                     "code" : error.code
                 })
-            }
             console.log(error);
         }
     }
