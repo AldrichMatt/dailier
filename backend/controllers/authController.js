@@ -20,14 +20,15 @@ export const auth = async ({email, password}) => {
     });
 };
 
-export const checksession = (req) => {
+export const checksession = (req, res) => {
   if(req.session.user_id){
     return({
       user_id : req.session.user_id
     })
   }else{
-    return({
-      message : "Please Login"
+    res.json({
+      message : "please login",
+      user_id : null
     })
   }
 }
