@@ -3,6 +3,11 @@ import { getTimestamps } from "./abstract.js"
 
 const prisma = new PrismaClient()
 
+// !! ADD AUTOMATION (node-cron) !!
+// ----------------------
+// create new habit_checkins record in database
+// 
+// ----------------------
 export const createCheckin = async (habit_id) => {
     return await prisma.habit_checkins.create({
         data : {
@@ -17,6 +22,10 @@ export const createCheckin = async (habit_id) => {
     })
 }
 
+// ----------------------
+// habit checkin record update completed to true
+//
+// ----------------------
 export const checkinComplete = async (habit_id) => {
     return await prisma.habit_checkins.update({
         data : {
@@ -58,6 +67,10 @@ export const getByHabitId = async (id) => {
     })
 }
 
+// ----------------------
+// return habit_id of a habit with specific id and user_id
+// 
+// ----------------------
 export const getSpecial = async (req) => {
     const habit_id = parseInt(req.params.id)
     return await prisma.habits.findFirst({

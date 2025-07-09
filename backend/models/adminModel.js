@@ -1,3 +1,7 @@
+// ----------------------
+// work in progress
+// supposedly for administrator of the app
+// ----------------------
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();

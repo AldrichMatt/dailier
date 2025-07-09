@@ -2,11 +2,19 @@ import { create, getAll, getById, remove, update} from "../models/habitModel.js"
 import { habitSchema } from "../schema/habit.js";
 import { checksession } from "./authController.js";
 
+// ----------------------
+// return all habits
+// 
+// ----------------------
 export const getHabits = async (req, res) => {
     const habitsData = await getAll(req);
     res.json(habitsData);
 }
 
+// ----------------------
+// create new habit
+// 
+// ----------------------
 export const newHabit = async (req, res) => {
     const {title, description, frequency} = req.body;
 
@@ -34,6 +42,10 @@ export const newHabit = async (req, res) => {
         }
 }
 
+// ----------------------
+// update habit by id
+// else return habit not found
+// ----------------------
 export const updateHabit = async (req, res) => {
     const {habit_id, user_id, title, description, frequency} = req.body;
 
@@ -67,6 +79,10 @@ export const updateHabit = async (req, res) => {
     }
 }
 
+// ----------------------
+// delete habit by id
+// else return error code
+// ----------------------
 export const deleteHabit = async (req, res) => {
     const {habit_id} = req.body;
 

@@ -1,5 +1,10 @@
 import { getByEmail } from "../models/userModel.js"
 
+// !! ADD ENCYRPTION !!
+// ----------------------
+// check and return if email and password match the record in database
+// else return 404 if no email found, or 403 if condition above not met
+// ----------------------
 export const auth = async ({email, password}) => {
 
   const userData = await getByEmail(email);  
@@ -20,6 +25,10 @@ export const auth = async ({email, password}) => {
     });
 };
 
+// ----------------------
+// check current active user and return user_id
+// if none, return please login
+// ----------------------
 export const checksession = (req, res) => {
   if(req.session.user_id){
     return({
@@ -33,7 +42,12 @@ export const checksession = (req, res) => {
   }
 }
 
+// ----------------------
+// destroy current session
+// forcing user to login
+// ----------------------
 export const destroysession = (req, res) => {
+  res.clearCookie('connect.sid');
   req.session.destroy(err => {
       if (err) {
         res.json({ message: 'Logout failed' });

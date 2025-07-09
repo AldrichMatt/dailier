@@ -29,22 +29,20 @@ app.get("/users", getUsers)
 app.get("/users/check", checkUser)
 app.get("/habits", getHabits)
 
-app.post("/users/new", newUser)
 app.post("/users/update", updateUser)
 app.post("/users/delete", deleteUser)
 
-app.post("/habits/new", newHabit)
 app.post("/habits/update", updateHabit)
 app.post("/habits/delete", deleteHabit)
 
 // REQUESTS FOR USERS
-app.post("/api/v1/signup", newUser)
-app.post("/api/v1/login", loginUser)
-app.get("/api/v1/logout", logout)
+app.post("/api/v1/signup", newUser) //done
+app.post("/api/v1/login", loginUser) //done
+app.get("/api/v1/logout", logout) //done
 
-app.get("/api/v1/habits", getHabits)
-app.post("/api/v1/habits", newHabit)
-app.get("/api/v1/habits/:id/checkin", checkinReport)
+app.get("/api/v1/habits", getHabits) //done
+app.post("/api/v1/habits", newHabit) //done
+app.get("/api/v1/habits/:id/checkin", checkinReport) //done
 app.get("/api/v1/progress/:id", checkinProgress) //done
 
 

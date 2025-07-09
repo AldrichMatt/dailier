@@ -5,11 +5,20 @@ import pkg from 'joi';
 
 const { optional } = pkg
 
+// ----------------------
+// used to check active user in session
+// use this instead of the one in authController
+// ----------------------
 export const checkUser = (req, res) => {
     const user_id = checksession(req, res);
+    console.log(user_id);
     return(user_id) //return null if user not logged in, else return integer
 }
 
+// ----------------------
+// check user login credential and added user_id to session
+// else return corresponding error
+// ----------------------
 export const loginUser = async (req, res) => {
     const {email, password} = req.body;
 
@@ -55,15 +64,27 @@ export const loginUser = async (req, res) => {
 
 }
 
+// ----------------------
+// log user out and destroy user_id property from session
+// 
+// ----------------------
 export const logout = (req, res) => {
     return destroysession(req, res);
 }
 
+// ----------------------
+// get all user data
+// 
+// ----------------------
 export const getUsers = async (req,res) => {
     const userData = await getAll();
     res.json(userData);
 }
 
+// ----------------------
+// create new user, email and username are unique
+// 
+// ----------------------
 export const newUser = async (req, res) => {
     const {username, email, password, repassword} = req.body;
 
@@ -92,6 +113,10 @@ export const newUser = async (req, res) => {
 
 }
 
+// ----------------------
+// update user by id
+// else return user not found
+// ----------------------
 export const updateUser = async (req, res) => {
     const {user_id, username, email, password, repassword} = req.body;
 
@@ -124,6 +149,10 @@ export const updateUser = async (req, res) => {
     }
 }
 
+// ----------------------
+// delete user by id
+// else return user not found
+// ----------------------
 export const deleteUser = async (req, res) => {
     const { user_id } = req.body;
 
