@@ -6,7 +6,7 @@ import pkg from 'joi';
 const { optional } = pkg
 
 export const checkUser = (req, res) => {
-    const {user_id} = checksession(req, res);
+    const user_id = checksession(req, res);
     return(user_id) //return null if user not logged in, else return integer
 }
 
