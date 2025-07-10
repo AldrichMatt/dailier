@@ -1,37 +1,42 @@
-import { Outlet, Link } from "react-router-dom";
-import { PhotoIcon, UserCircleIcon } from '@heroicons/react/24/solid'
-import { ChevronDownIcon } from '@heroicons/react/16/solid'
-import React, {useState} from "react";
+import {useState} from "react";
 import axios from 'axios';
+import ModalWarning from "../component/ModalWarning";
+import ModalSuccess from "../component/ModalSuccess";
+import ReactDOM from 'react-dom/client';
 
 const Register = () => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
-  const checkPassword = (repassword) => {
-    if(repassword != password){
-      console.log("false");
-    }else{
-      console.log("true");
-    }
-  }
+  const [repassword, setRepassword] = useState('');
   
   const handleSubmit = async (e) => {
     e.preventDefault();
     const response = await 
-    axios.post('http://localhost:5000/register', 
+    axios.post('http://localhost:5000/api/v1/signup', 
       { 
-        username, email, password
+        username, email, password, repassword
       }, {
         headers : {
           "Content-Type" : 'application/json'
         }
       });
+
+    const root = ReactDOM.createRoot(document.getElementById('modal'));
+    const message = response.data.message;
     console.log('Server response:', response.data);
+
+    //change this with better response later
+    if (response.data.id != null) {
+      root.render(<ModalSuccess message={message}></ModalSuccess>)
+      window.location.href = '/home';
+    } else {
+      root.render(<ModalWarning message={message}></ModalWarning>)
+    }
   };
   return (
     <>
+    <div id="modal"></div>
     <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
           <img
@@ -114,7 +119,8 @@ const Register = () => {
                   type="password"
                   required
                   className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
-                  onChange={(e) => checkPassword(e.target.value)}
+                  value={repassword}
+                  onChange={(e) => setRepassword(e.target.value)}
                 />
                 <p
                   className="text-red-500"

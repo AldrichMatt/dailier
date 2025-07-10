@@ -1,10 +1,8 @@
-import { Outlet, Link } from "react-router-dom";
-import { PhotoIcon, UserCircleIcon } from '@heroicons/react/24/solid'
-import { ChevronDownIcon } from '@heroicons/react/16/solid'
-import React, {useState} from "react";
+import {useState} from "react";
+import ReactDOM from 'react-dom/client';
 import axios from 'axios';
-import { logDOM } from "@testing-library/dom";
-import Joi from "joi";
+import ModalSuccess from "../component/ModalSuccess";
+import ModalDanger from "../component/ModalDanger";
 
 
 const Login = () => {
@@ -14,7 +12,7 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const response = await 
-    axios.post('http://localhost:5000/login', 
+    axios.post('http://localhost:5000/api/v1/login', 
       { 
         email,
         password
@@ -23,24 +21,23 @@ const Login = () => {
           "Content-Type" : 'application/json'
         }
       });
+
+      //change this with better response later
       //status validasi login
+      const root = ReactDOM.createRoot(document.getElementById('modal'));
+      const message = response.data.message
       const status = response.data.status;
-      switch (status) {
-        case '200':
-          window.location.href = '/home';
-          break;
-        case '404':
-          alert('Email tidak ditemukan!');
-          break;
-        case '403':
-          alert('Password salah');
-          break;
-        default:
-          break;
+      console.log(message);
+      if (status == '200') {
+        root.render(<ModalSuccess message={message}/>);
+        window.location.href = '/home';
+      }else{
+        root.render(<ModalDanger message={message}/>);
       }
   };
   return (
     <>
+    <div id="modal"></div>
     <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
           <img
