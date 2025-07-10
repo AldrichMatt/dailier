@@ -101,7 +101,10 @@ export const newUser = async (req, res) => {
         try {
             const user = await create(username, email, password)
             req.session.user_id = user.id
-            res.json(user);
+            res.json({
+                message : "Signed up successfully!",
+                data : user
+            });
         } catch (error) {
                 res.json({
                     "message" : error.meta,
