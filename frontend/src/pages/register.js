@@ -27,7 +27,7 @@ const Register = () => {
     console.log('Server response:', response.data);
 
     //change this with better response later
-    if (response.data.id != null) {
+    if (response.data != null) {
       root.render(<ModalSuccess message={message}></ModalSuccess>)
       window.location.href = '/home';
     } else {
