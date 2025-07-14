@@ -2,16 +2,19 @@ import {useState} from "react";
 import ReactDOM from 'react-dom/client';
 import axios from 'axios';
 import ModalSuccess from "../component/ModalSuccess";
-import ModalDanger from "../component/ModalDanger";
+import ModalWarning from "../component/ModalWarning";
+import { useNavigate } from "react-router-dom";
 
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   
+  const navigate = useNavigate();
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const response = await 
+    try {
+      const response = await 
     axios.post('http://localhost:5000/api/v1/login', 
       { 
         email,
@@ -19,21 +22,23 @@ const Login = () => {
       },{
         headers : {
           "Content-Type" : 'application/json'
-        }
+        },
+        withCredentials : true
       });
-
-      //change this with better response later
       //status validasi login
+
       const root = ReactDOM.createRoot(document.getElementById('modal'));
       const message = response.data.message
-      const status = response.data.status;
-      console.log(message);
-      if (status == '200') {
+      const user_id = response.data.active_user
+      if (user_id != null) {
         root.render(<ModalSuccess message={message}/>);
-        window.location.href = '/home';
+        navigate('/home');
       }else{
-        root.render(<ModalDanger message={message}/>);
+        root.render(<ModalWarning message={message}/>);
       }
+    } catch (error) {
+      console.log(error)
+    }
   };
   return (
     <>
@@ -75,11 +80,11 @@ const Login = () => {
                 <label htmlFor="password" className="block text-sm/6 font-medium text-gray-900">
                   Password
                 </label>
-                <div className="text-sm">
+                {/* <div className="text-sm">
                   <a href="#" className="font-semibold text-indigo-600 hover:text-indigo-500">
                     Forgot password?
                   </a>
-                </div>
+                </div> */}
               </div>
               <div className="mt-2">
                 <input

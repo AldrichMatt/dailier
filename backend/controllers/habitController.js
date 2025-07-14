@@ -18,8 +18,9 @@ export const getHabits = async (req, res) => {
 export const newHabit = async (req, res) => {
     const {title, description, frequency} = req.body;
 
-    const user_id = checksession(req, res).user_id;
-    
+    const user_id = checksession(req, res);
+
+    if(user_id != null){
         const validate = habitSchema.validate({
             title : title,
             description : description,
@@ -40,6 +41,11 @@ export const newHabit = async (req, res) => {
                 console.log(error);
             }
         }
+    }else{
+        res.json({
+            "message" : "Please Login"
+        })
+    }
 }
 
 // ----------------------

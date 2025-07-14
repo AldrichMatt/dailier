@@ -11,8 +11,9 @@ const { optional } = pkg
 // ----------------------
 export const checkUser = (req, res) => {
     const user_id = checksession(req, res);
-    console.log(user_id);
-    return(user_id) //return null if user not logged in, else return integer
+    res.json({
+        user_id : user_id
+    }) //return null if user not logged in, else return integer
 }
 
 // ----------------------
@@ -50,6 +51,12 @@ export const loginUser = async (req, res) => {
             });
             break;
         case '200':     
+            res.cookie('session_id', result.user.id, {
+            httpOnly: true,
+            sameSite: 'Strict',
+            secure: false, // ubah jadi true di production (HTTPS)
+            maxAge: 86400000, // 1 hari
+            });
             req.session.user_id = result.user.id
             res.json({
                 message : "Logged in successfully!",
@@ -69,7 +76,7 @@ export const loginUser = async (req, res) => {
 // 
 // ----------------------
 export const logout = (req, res) => {
-    return destroysession(req, res);
+    destroysession(req, res);
 }
 
 // ----------------------

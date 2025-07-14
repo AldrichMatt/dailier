@@ -31,14 +31,9 @@ export const auth = async ({email, password}) => {
 // ----------------------
 export const checksession = (req, res) => {
   if(req.session.user_id){
-    return({
-      user_id : req.session.user_id
-    })
+    return req.session.user_id
   }else{
-    res.json({
-      message : "please login",
-      user_id : null
-    })
+    return null
   }
 }
 

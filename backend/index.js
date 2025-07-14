@@ -5,14 +5,20 @@ import { deleteHabit, getHabits, newHabit, updateHabit } from "./controllers/hab
 import session from "express-session";
 import dotenv from 'dotenv';
 import { checkinReport, checkinProgress } from "./controllers/checkinController.js";
+import cookieParser from "cookie-parser";
 
 dotenv.config();
 
 const app = express();
 const PORT = 5000;
 
-app.use(cors());
 app.use(express.json());
+app.use(cookieParser());
+
+app.use(cors({
+  origin : 'http://localhost:3000',
+  credentials : true
+}));
 
 app.use(session({
   secret: process.env.SESSION_SECRET,
