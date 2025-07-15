@@ -26,4 +26,4 @@ experience with front-end and back-end development
 - API : RESTful API
 - DBMS : PostgreSQL
 - Form Validation : Joi
-- Password Hashing : Bcrypt
+- Password Hashing
