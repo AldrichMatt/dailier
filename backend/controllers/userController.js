@@ -1,4 +1,4 @@
-import { auth, checksession, destroysession } from "./authController.js";
+import { auth, checksession, destroysession, encrypt } from "./authController.js";
 import { getAll, create, update, getById, remove } from "../models/userModel.js";
 import { userSchema } from "../schema/user.js";
 import pkg from 'joi';
@@ -16,6 +16,7 @@ export const checkUser = (req, res) => {
     }) //return null if user not logged in, else return integer
 }
 
+// !! ADD ENCYRPTION !!
 // ----------------------
 // check user login credential and added user_id to session
 // else return corresponding error
@@ -88,6 +89,7 @@ export const getUsers = async (req,res) => {
     res.json(userData);
 }
 
+// !! ADD ENCYRPTION !!
 // ----------------------
 // create new user, email and username are unique
 // 
@@ -106,7 +108,8 @@ export const newUser = async (req, res) => {
         res.json(validate.error.details[0])
     }else{
         try {
-            const user = await create(username, email, password)
+            const hashedpass = encrypt(password);
+            const user = await create(username, email, hashedpass)
             req.session.user_id = user.id
             res.json({
                 message : "Signed up successfully!",
@@ -144,7 +147,8 @@ export const updateUser = async (req, res) => {
         res.json(validate.error.details[0])
     }else{
         try {
-            res.json(await update(user_id, username, email, password));
+            const hashedpass = encrypt(password);
+            res.json(await update(user_id, username, email, hashedpass));
         } catch (error) {
             res.json({
                 "message" : error.meta,

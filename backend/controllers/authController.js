@@ -1,4 +1,5 @@
 import { getByEmail } from "../models/userModel.js"
+import bcrypt, { hash } from "bcryptjs";
 
 // !! ADD ENCYRPTION !!
 // ----------------------
@@ -14,7 +15,7 @@ export const auth = async ({email, password}) => {
       }
     }
     // Dummy auth logic (replace with real DB or logic)
-    if (password === userData.password) {
+    if (bcrypt.compareSync(password, userData.password)) {
       return({
         status : '200',
         user : userData
@@ -50,4 +51,10 @@ export const destroysession = (req, res) => {
         res.json({ message: 'Logged out' });
       }
     });
+}
+
+export const encrypt = (message) => {
+  const salt = bcrypt.genSaltSync(10)
+  const hash = bcrypt.hashSync(message, salt)
+  return hash;
 }
