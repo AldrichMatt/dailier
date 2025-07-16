@@ -43,11 +43,14 @@ export const checksession = (req, res) => {
 // forcing user to login
 // ----------------------
 export const destroysession = (req, res) => {
-  res.clearCookie('connect.sid');
   req.session.destroy(err => {
-      if (err) {
+    if (err) {
+        console.log("logout failed");
         res.json({ message: 'Logout failed' });
       }else{
+        res.clearCookie('session_id');
+        res.clearCookie('connect.sid');
+        console.log("logged out");
         res.json({ message: 'Logged out' });
       }
     });

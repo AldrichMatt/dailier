@@ -53,8 +53,9 @@ export const loginUser = async (req, res) => {
             break;
         case '200':     
             res.cookie('session_id', result.user.id, {
+            path : '/',
             httpOnly: true,
-            sameSite: 'Strict',
+            sameSite: 'Lax',
             secure: false, // ubah jadi true di production (HTTPS)
             maxAge: 86400000, // 1 hari
             });
