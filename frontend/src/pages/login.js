@@ -1,16 +1,36 @@
-import {useState} from "react";
+import { useState, useEffect } from "react";
 import ReactDOM from 'react-dom/client';
 import axios from 'axios';
 import ModalSuccess from "../component/ModalSuccess";
 import ModalWarning from "../component/ModalWarning";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation} from "react-router-dom";
+import { Bounce, ToastContainer, ToastContainter, toast } from 'react-toastify';
+import { ToastWarning } from "../component/ToastWarning";
+import { ToastSuccess } from "../component/ToastSuccess";
 
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  
   const navigate = useNavigate();
+
+  //session expired message
+  const location = useLocation();
+  const warning = location.state?.warning
+  const success = location.state?.success
+  
+  useEffect(() => {
+    if(warning){
+      ToastWarning(warning)
+      window.history.replaceState({}, '');
+    }else if(success){
+      ToastSuccess(success)
+      window.history.replaceState({}, '');
+    }
+  },[])
+
+  
+  //handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -25,14 +45,17 @@ const Login = () => {
         },
         withCredentials : true
       });
-      //status validasi login
-
+      
+      //login validation
       const root = ReactDOM.createRoot(document.getElementById('modal'));
       const message = response.data.message
       const user_id = response.data.active_user
       if (user_id != null) {
-        root.render(<ModalSuccess message={message}/>);
-        navigate('/home');
+        navigate('/home', {
+          state : {
+            success : message
+          }
+        });
       }else{
         root.render(<ModalWarning message={message}/>);
       }
@@ -42,7 +65,15 @@ const Login = () => {
   };
   return (
     <>
+    {/* {//clear state.warning
+      useEffect(() => {
+        if (location.state?.warning) {
+          navigate(location.pathname, { replace: true });
+        }
+      }, [location, navigate])
+    } */}
     <div id="modal"></div>
+    <ToastContainer autoClose={false} theme='colored' draggable transition={Bounce}></ToastContainer>
     <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
           <img

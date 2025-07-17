@@ -7,11 +7,15 @@ export default function Logout(){
 
     useEffect(() => {
         const performLogout = () => {
-            const data = axios.get(
+            axios.get(
                 'http://localhost:5000/api/v1/logout', 
                 {withCredentials : true}
             )
-            navigate('/login');
+            navigate('/login',{
+                state : {
+                    success : "Logout Success!"
+                }
+            });
         }
         performLogout()
     }, [navigate])

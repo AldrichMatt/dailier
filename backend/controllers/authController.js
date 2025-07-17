@@ -50,7 +50,6 @@ export const destroysession = (req, res) => {
       }else{
         res.clearCookie('session_id');
         res.clearCookie('connect.sid');
-        console.log("logged out");
         res.json({ message: 'Logged out' });
       }
     });
