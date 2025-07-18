@@ -1,7 +1,7 @@
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { useEffect } from "react"
-import { Auth } from "../auth"
+import { useAuthGuard } from "../auth"
 import { Nav } from '../component/Navbar'
 import { Row } from '../component/Row'
 import { Card } from '../component/Card'
@@ -12,7 +12,7 @@ import { ToastContainer } from 'react-toastify'
 
 
 const Home = () => {
-  Auth();
+  useAuthGuard();
   const location = useLocation()
   const success = location.state?.success
   useEffect(() => {
@@ -27,8 +27,8 @@ const Home = () => {
     <Nav></Nav>
       <div className="relative isolate px-6 py-10 lg:px-8">
         <Row>
-          <Card>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Doloribus, blanditiis.</Card>
-          <Card>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Doloribus, blanditiis.</Card>
+          <Card title={"Chart"}>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Doloribus, blanditiis.</Card>
+          <Card title={"Habits"}>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Doloribus, blanditiis.</Card>
         </Row>
       </div>
     </div>

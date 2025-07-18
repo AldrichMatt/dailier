@@ -18,7 +18,7 @@ export const getAll = async (req) => {
     })
 }
 
-export const getById = async (habit_id) => {
+export const getHabitById = async (habit_id) => {
     return await prisma.habits.findUnique({
         select : {
             id : true,

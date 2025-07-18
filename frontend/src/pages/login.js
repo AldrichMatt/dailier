@@ -13,6 +13,7 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
+  const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
   //session expired message
   const location = useLocation();
@@ -35,7 +36,7 @@ const Login = () => {
     e.preventDefault();
     try {
       const response = await 
-    axios.post('http://localhost:5000/api/v1/login', 
+    axios.post(`${BASE_URL}/api/v1/login`, 
       { 
         email,
         password

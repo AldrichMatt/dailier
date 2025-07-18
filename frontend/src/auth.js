@@ -2,29 +2,31 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import ModalWarning from './component/ModalWarning';
+import { useUserStore } from './middleware/useUserStore';
 
-export const Auth = () => {
+export const useAuthGuard = () => {
   const navigate = useNavigate();
+  const setUser = useUserStore(state => state.setUser)
+  const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
   useEffect(() => {
     const verifySession = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/users/check", {
+        const res = await axios.get(`${BASE_URL}/users/check`, {
           withCredentials: true
         });
-        const user_id = res.data.user_id;
-
+        const { user, user_id } = res.data;
         if (!user_id) {
-          axios.get("http://localhost:5000/api/v1/logout", {
+          await axios.get("http://localhost:5000/api/v1/logout", {
             withCredentials: true
           });
           navigate("/login", {
             state : {
               warning : "Session expired, Please login again"
             }
-          });
-          
+          }); 
+        }else if(user && user_id){
+          setUser(user)
         }
       } catch (error) {
         console.error("Error checking session:", error);

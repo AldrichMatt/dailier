@@ -1,5 +1,5 @@
 import { auth, checksession, destroysession, encrypt } from "./authController.js";
-import { getAll, create, update, getById, remove } from "../models/userModel.js";
+import { getAll, create, update, getUserById, remove } from "../models/userModel.js";
 import { userSchema } from "../schema/user.js";
 import pkg from 'joi';
 
@@ -11,9 +11,11 @@ const { optional } = pkg
 // ----------------------
 export const checkUser = (req, res) => {
     const user_id = checksession(req, res);
+    const user = getUserById(user_id)
     res.json({
-        user_id : user_id
-    }) //return null if user not logged in, else return integer
+        user_id : user_id,
+        user : user
+    }) //return null if user not logged in, else return integer and user object
 }
 
 // !! ADD ENCYRPTION !!
@@ -134,7 +136,7 @@ export const newUser = async (req, res) => {
 export const updateUser = async (req, res) => {
     const {user_id, username, email, password, repassword} = req.body;
 
-    const user = await getById(user_id);
+    const user = await getUserById(user_id);
 
     if(user != null){   
         const validate = userSchema.validate({
@@ -171,7 +173,7 @@ export const updateUser = async (req, res) => {
 export const deleteUser = async (req, res) => {
     const { user_id } = req.body;
 
-    const user = await getById(user_id)
+    const user = await getUserById(user_id)
 
     try {
         await remove(user_id)
