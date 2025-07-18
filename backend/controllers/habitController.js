@@ -1,4 +1,4 @@
-import { create, getAll, getById, remove, update} from "../models/habitModel.js";
+import { create, getAll, getHabitById, remove, update} from "../models/habitModel.js";
 import { habitSchema } from "../schema/habit.js";
 import { checksession } from "./authController.js";
 
@@ -55,7 +55,7 @@ export const newHabit = async (req, res) => {
 export const updateHabit = async (req, res) => {
     const {habit_id, user_id, title, description, frequency} = req.body;
 
-    const habit = getById(habit_id);
+    const habit = getHabitById(habit_id);
 
     if(habit != null){   
         const validate = habitSchema.validate({
@@ -92,7 +92,7 @@ export const updateHabit = async (req, res) => {
 export const deleteHabit = async (req, res) => {
     const {habit_id} = req.body;
 
-    const habit = await getById(habit_id)
+    const habit = await getHabitById(habit_id)
 
     console.log(habit);
     try {

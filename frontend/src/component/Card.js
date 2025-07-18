@@ -1,4 +1,4 @@
-export const Card = ({children}) => {
+export const Card = ({title, children}) => {
     return(
         <div className="
         flex flex-col flex-grow
@@ -8,7 +8,14 @@ export const Card = ({children}) => {
         rounded-sm
         shadow-md
         bg-white
+        text-gray-600
         ">
+            <span className="
+            text-2xl
+            text-gray-500
+            pb-3
+            font-sans
+            ">{title}</span>
             {children}
         </div>
     )
