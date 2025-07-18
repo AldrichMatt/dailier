@@ -22,8 +22,11 @@ experience with front-end and back-end development
 ## Tech Stack : 
 - Backend : Express.js (Node.js)
 - Frontend : React.js + Tailwind
+- State management : Zustand
+- Chart : recharts
 - API : RESTful API
 - DBMS : PostgreSQL + Prisma ORM
 - Form Validation : Joi
 - Password Hashing : bcrypt
+- Scheduling : Node-cron
 - Notification : Toastify
