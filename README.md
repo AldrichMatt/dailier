@@ -19,11 +19,11 @@ You'll be able to set your Habit Streak on fire for days and keep them on track 
 The project is still under development, and it's main purpose is for experimenting and gaining hands on
 experience with front-end and back-end development
 
-## Specification : 
+## Tech Stack : 
 - Backend : Express.js (Node.js)
-- Frontend : React.js (Node.js)
-- Stylesheet : Tailwind CSS
+- Frontend : React.js + Tailwind
 - API : RESTful API
-- DBMS : PostgreSQL
+- DBMS : PostgreSQL + Prisma ORM
 - Form Validation : Joi
-- Password Hashing
+- Password Hashing : bcrypt
+- Notification : Toastify
