@@ -1,4 +1,4 @@
-import { create, getAll, getHabitById, remove, update} from "../models/habitModel.js";
+import { create, getAllHabitByUserId, getHabitById, remove, update} from "../models/habitModel.js";
 import { habitSchema } from "../schema/habit.js";
 import { checksession } from "./authController.js";
 
@@ -7,8 +7,10 @@ import { checksession } from "./authController.js";
 // 
 // ----------------------
 export const getHabits = async (req, res) => {
-    const habitsData = await getAll(req);
-    res.json(habitsData);
+    const habitsData = await getAllHabitByUserId(req);
+    res.json({
+    habits : habitsData
+    });
 }
 
 // ----------------------

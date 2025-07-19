@@ -7,6 +7,7 @@ import { useNavigate, useLocation} from "react-router-dom";
 import { Bounce, ToastContainer, ToastContainter, toast } from 'react-toastify';
 import { ToastWarning } from "../component/ToastWarning";
 import { ToastSuccess } from "../component/ToastSuccess";
+import { useAuthGuard } from "../auth";
 
 
 const Login = () => {
@@ -19,6 +20,7 @@ const Login = () => {
   const location = useLocation();
   const warning = location.state?.warning
   const success = location.state?.success
+
   
   useEffect(() => {
     if(warning){

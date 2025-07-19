@@ -26,10 +26,13 @@ const Home = () => {
     <ToastContainer theme='colored' autoClose='3500'></ToastContainer>
     <Nav></Nav>
       <div className="relative isolate px-6 py-10 lg:px-8">
-        <Row>
-          <Card title={"Chart"}>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Doloribus, blanditiis.</Card>
-          <Card title={"Habits"}>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Doloribus, blanditiis.</Card>
-        </Row>
+      <Row>
+        <Card title={"Chart"}></Card>
+      </Row>
+      <Row>
+        <Card title={"Badges"}>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Doloribus, blanditiis.</Card>
+        <Card title={"Habits"}>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Doloribus, blanditiis.</Card>
+      </Row>
       </div>
     </div>
   )

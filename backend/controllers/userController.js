@@ -9,13 +9,20 @@ const { optional } = pkg
 // used to check active user in session
 // use this instead of the one in authController
 // ----------------------
-export const checkUser = (req, res) => {
+export const checkUser = async (req, res) => {
     const user_id = checksession(req, res);
-    const user = getUserById(user_id)
-    res.json({
+    if (user_id) {
+        const user = await getUserById(user_id)
+
+        res.json({
         user_id : user_id,
         user : user
-    }) //return null if user not logged in, else return integer and user object
+    })
+    }else{
+        res.json({
+            user_id : user_id
+        })
+    }
 }
 
 // !! ADD ENCYRPTION !!
