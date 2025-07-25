@@ -5,7 +5,7 @@ import axios from 'axios';
 import { useUserStore } from './middleware/useUserStore';
 import { useHabitStore } from './middleware/useHabitStore';
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+export const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
 
 

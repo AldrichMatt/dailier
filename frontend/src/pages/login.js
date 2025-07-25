@@ -1,10 +1,8 @@
 import { useState, useEffect } from "react";
 import ReactDOM from 'react-dom/client';
 import axios from 'axios';
-import ModalSuccess from "../component/ModalSuccess";
-import ModalWarning from "../component/ModalWarning";
 import { useNavigate, useLocation} from "react-router-dom";
-import { Bounce, ToastContainer, ToastContainter, toast } from 'react-toastify';
+import { Bounce, ToastContainer } from 'react-toastify';
 import { ToastWarning } from "../component/ToastWarning";
 import { ToastSuccess } from "../component/ToastSuccess";
 import { useAuthGuard } from "../auth";
@@ -60,7 +58,7 @@ const Login = () => {
           }
         });
       }else{
-        root.render(<ModalWarning message={message}/>);
+        ToastWarning(message)
       }
     } catch (error) {
       console.log(error)
@@ -68,15 +66,8 @@ const Login = () => {
   };
   return (
     <>
-    {/* {//clear state.warning
-      useEffect(() => {
-        if (location.state?.warning) {
-          navigate(location.pathname, { replace: true });
-        }
-      }, [location, navigate])
-    } */}
     <div id="modal"></div>
-    <ToastContainer autoClose={false} theme='colored' draggable transition={Bounce}></ToastContainer>
+    <ToastContainer autoClose={2500} theme='colored' draggable transition={Bounce}></ToastContainer>
     <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
           <img

@@ -41,6 +41,7 @@ export default function ModalSuccess({message}) {
               <div className="bg-white px-4 pt-2 sm:pb-4">
                 <div className="sm:flex sm:items-center sm:justify-end">
                   <button
+                    type='button'
                     onClick={() => setOpen(false)}
                     className="absolute top-2 right-2 p-1 rounded hover:bg-gray-100 transition"
                     aria-label="Close modal"

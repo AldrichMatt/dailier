@@ -2,9 +2,9 @@ export const Row = ({children}) => {
     return(
         <div className="
         flex flex-row
-        py-3 px-3 my-3
+        py-4 px-2 mb-5
         rounded-md
-        bg-neutral-100
+        bg-slate-200
         shadow-xl
         justify-evenly
         ">

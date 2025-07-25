@@ -6,17 +6,21 @@ import Home from './pages/Home';
 import Register from './pages/register';
 import './style.css';
 import Logout from './pages/Logout';
+import { SessionPing } from './middleware/SessionPing';
 
 export default function App() {
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Login />}/>
-        <Route path="/login" element={<Login />}/>
+    <Routes>
+
+      <Route path="/" element={<Login />}/>
+      <Route path="/login" element={<Login />}/>
+      <Route element={<SessionPing/>}>
         <Route path="/register" element={<Register />}/>
         <Route path="/home" element={<Home />}/>
         <Route path="/logout" element={<Logout />} />
-      </Routes>
+      </Route>
+    </Routes>
     </BrowserRouter>
   );
 }
