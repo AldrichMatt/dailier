@@ -60,3 +60,12 @@ export const encrypt = (message) => {
   const hash = bcrypt.hashSync(message, salt)
   return hash;
 }
+
+export const refreshsession = (req,res) => {
+  if (req.session && req.session.user_id) {
+    req.session.touch(); // Memperbarui expiry time
+    res.sendStatus(200); // atau kirim JSON kalau perlu
+  } else {
+    res.sendStatus(401);
+  }
+}

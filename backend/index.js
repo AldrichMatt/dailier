@@ -6,6 +6,7 @@ import session from "express-session";
 import dotenv from 'dotenv';
 import { checkinReport, checkinProgress } from "./controllers/checkinController.js";
 import cookieParser from "cookie-parser";
+import { refreshsession } from "./controllers/authController.js";
 
 dotenv.config();
 
@@ -33,6 +34,7 @@ app.use(session({
 // REQUESTS FOR ADMIN
 app.get("/users", getUsers)
 app.get("/users/check", checkUser)
+app.get("/ping", refreshsession)
 app.get("/habits", getHabits)
 
 app.post("/users/update", updateUser)
@@ -54,6 +56,6 @@ app.get("/api/v1/progress/:id", checkinProgress) //done
 
 
 app.listen(PORT,() => {
-    console.log("Server is running "); 
+    console.log("Server is running on port 5000 "); 
 });
 
