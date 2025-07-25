@@ -18,8 +18,8 @@ const passwordSchema = Joi.string()
 
 
 export const userSchema = Joi.object({
-  email : Joi.string().email().required(),
   username : Joi.string().alphanum().required().min(4).max(16),
+  email : Joi.string().email().required(),
   password : passwordSchema,
   repassword : Joi.string().required()
     .valid(Joi.ref('password'))

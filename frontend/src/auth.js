@@ -21,7 +21,7 @@ export const  useAuthGuard = () => {
           withCredentials: true
         });
         const { user, user_id } = res.data;
-        if (!user_id) {
+        if (!user_id || !user) {
           await axios.get(`${BASE_URL}/api/v1/logout`, {
             withCredentials: true
           });

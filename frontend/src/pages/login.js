@@ -5,7 +5,6 @@ import { useNavigate, useLocation} from "react-router-dom";
 import { Bounce, ToastContainer } from 'react-toastify';
 import { ToastWarning } from "../component/ToastWarning";
 import { ToastSuccess } from "../component/ToastSuccess";
-import { useAuthGuard } from "../auth";
 
 
 const Login = () => {
@@ -48,7 +47,6 @@ const Login = () => {
       });
       
       //login validation
-      const root = ReactDOM.createRoot(document.getElementById('modal'));
       const message = response.data.message
       const user_id = response.data.active_user
       if (user_id != null) {
@@ -66,7 +64,6 @@ const Login = () => {
   };
   return (
     <>
-    <div id="modal"></div>
     <ToastContainer autoClose={2500} theme='colored' draggable transition={Bounce}></ToastContainer>
     <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">

@@ -1,42 +1,64 @@
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import axios from 'axios';
-import ModalWarning from "../component/ModalWarning";
-import ModalSuccess from "../component/ModalSuccess";
-import ReactDOM from 'react-dom/client';
+import { ToastWarning } from "../component/ToastWarning";
+import { Bounce, ToastContainer } from "react-toastify";
+import { BASE_URL } from "../auth";
+import { ToastSuccess } from "../component/ToastSuccess";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const Register = () => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [repassword, setRepassword] = useState('');
+
+  
+  const navigate = useNavigate();
+  const location = useLocation();
+  const warning = location.state?.warning
+  const success = location.state?.success
+
+  useEffect(() => {
+      if(warning){
+        ToastWarning(warning)
+        window.history.replaceState({}, '');
+      }else if(success){
+        ToastSuccess(success)
+        window.history.replaceState({}, '');
+      }
+    },[])
   
   const handleSubmit = async (e) => {
     e.preventDefault();
     const response = await 
-    axios.post('http://localhost:5000/api/v1/signup', 
+    axios.post(`${BASE_URL}/api/v1/signup`, 
       { 
         username, email, password, repassword
       }, {
         headers : {
           "Content-Type" : 'application/json'
-        }
-      });
-
-    const root = ReactDOM.createRoot(document.getElementById('modal'));
+        },
+        withCredentials : true
+      })
     const message = response.data.message;
     console.log('Server response:', response.data);
 
     //change this with better response later
-    if (response.data != null) {
-      root.render(<ModalSuccess message={message}></ModalSuccess>)
-      window.location.href = '/home';
+    if (response.data.active_user != null) {
+      navigate('/home', {
+          state : {
+            success : message
+          }
+        });
     } else {
-      root.render(<ModalWarning message={message}></ModalWarning>)
+      const subject = message.charAt(0).toUpperCase()
+  + message.slice(1)
+      ToastWarning(`${subject} already exist!`)
     }
   };
   return (
     <>
-    <div id="modal"></div>
+    <ToastContainer autoClose={2500} theme='colored' draggable transition={Bounce}></ToastContainer>
     <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
           <img

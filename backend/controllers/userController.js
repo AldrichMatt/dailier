@@ -108,9 +108,9 @@ export const newUser = async (req, res) => {
     const {username, email, password, repassword} = req.body;
 
     const validate = userSchema.validate({
+        username : username,
         email : email,
         password : password,
-        username : username,
         repassword : repassword
     })
 
@@ -120,15 +120,22 @@ export const newUser = async (req, res) => {
         try {
             const hashedpass = encrypt(password);
             const user = await create(username, email, hashedpass)
+            res.cookie('session_id', user.id, {
+                path : '/',
+                httpOnly: true,
+                sameSite: 'Lax',
+                secure: false, // ubah jadi true di production (HTTPS)
+                maxAge: 86400000, // 1 hari
+            });
             req.session.user_id = user.id
             res.json({
                 message : "Signed up successfully!",
-                data : user
+                active_user : user.id
             });
         } catch (error) {
                 res.json({
-                    "message" : error.meta,
-                    "code" : error.code
+                    message : error.meta.target[0],
+                    code : error.code
                 })
             console.log(error);
         }

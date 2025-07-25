@@ -93,7 +93,7 @@ const Home = () => {
             </thead>
             <tbody>
               {habits.map((item) => (
-                <tr>
+                <tr key={item.id}>
                   <td>{item.id}</td>
                   <td>{item.title}</td>
                   <td>{item.frequency}</td>
