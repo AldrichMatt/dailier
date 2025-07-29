@@ -7,7 +7,14 @@ import { useHabitStore } from './middleware/useHabitStore';
 
 export const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
-
+export const fetchHabits = async (setHabits) => {
+  const habits = await axios.get(`${BASE_URL}/api/v1/habits`,{
+            withCredentials : true
+          })
+          if(habits){
+            setHabits(habits.data.habits)
+          }
+}
 
 export const  useAuthGuard = () => {
   const navigate = useNavigate();
@@ -32,12 +39,7 @@ export const  useAuthGuard = () => {
           }); 
         }else if(user && user_id){
           setUser(user)
-          const habits = await axios.get(`${BASE_URL}/api/v1/habits`,{
-            withCredentials : true
-          })
-          if(habits){
-            setHabits(habits.data.habits)
-          }
+          await fetchHabits(setHabits)
         }
       } catch (error) {
         console.error("Error checking session:", error);

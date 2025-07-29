@@ -1,10 +1,10 @@
 import { PlusCircleIcon } from '@heroicons/react/24/outline'
 import { useEffect, useState } from "react"
-import { useAuthGuard } from "../auth"
+import { fetchHabits, useAuthGuard } from "../auth"
 import { Nav } from '../component/Navbar'
 import { Row } from '../component/Row'
 import { Card } from '../component/Card'
-import { Form, useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { ToastSuccess } from '../component/ToastSuccess'
 import { ToastContainer } from 'react-toastify'
 import { useHabitStore } from '../middleware/useHabitStore'
@@ -14,13 +14,6 @@ import SelectInput from '../component/SelectInput'
 import { BASE_URL } from '../auth'
 import axios from 'axios'
 import { ToastWarning } from '../component/ToastWarning'
-import { useHabitStore } from '../middleware/useHabitStore'
-import FormModal from '../component/FormModal'
-import InputGroup from '../component/InputGroup'
-import ReactDOM from 'react-dom/client';
-import SelectInput from '../component/SelectInput'
-import { BASE_URL } from '../auth'
-import axios from 'axios'
 
 
 const Home = () => {
@@ -28,14 +21,17 @@ const Home = () => {
   const habits = useHabitStore(state => state.habits)
   const location = useLocation()
   const success = location.state?.success
+  const setHabits = useHabitStore(state => state.setHabits)
+  const navigate = useNavigate();
   
   useAuthGuard();
   
   const [showModal, setShowModal] = useState(false)
+  const [key, setKey] = useState(0)
 
   const [title, setTitle] = useState('')
-  const [frequency, setFrequency] = useState('')
-  const [description, setDescription] = useState('')
+  const [frequency, setFrequency] = useState('Daily')
+  const [description, setDescription] = useState('-')
 
   const openModal = () => setShowModal(true)
   const closeModal = () => setShowModal(false)
@@ -43,23 +39,35 @@ const Home = () => {
   const addHabit = async (e) => {
     e.preventDefault();
     try {
-      axios.post(`${BASE_URL}/api/v1/habits`,
+      const res = axios.post(`${BASE_URL}/api/v1/habits`,
         {
-          title, frequency, description
+          title, frequency : frequency.toUpperCase(), description
         },{
           headers : {
             "Content-Type" : 'application/json'
-          }
+          },
+          withCredentials : true
         }
       )
-    closeModal();
-    setTitle("")
-    setFrequency("Daily")
-    setDescription("")
-    ToastSuccess("Habit created successfully!")
+      console.log((await res).data.id);
+      if ((await res).data.id) {
+        closeModal();
+        setTitle("")
+        setFrequency("Daily")
+        setDescription("")
+        ToastSuccess("Habit created successfully!")
+        setKey(key + 1)
+        await fetchHabits(setHabits)
+      }else{
+        ToastWarning((await res).data.message)
+        navigate('/',{
+          state : {
+            warning : "Please Login!"
+          }
+        })  
+      }
     } catch (error) {
-    ToastWarning(error)
-    console.log(error);  
+      console.log(error);  
     }
   }
 
@@ -82,7 +90,7 @@ const Home = () => {
           handleSubmit={addHabit}
         >
           <InputGroup label={"Title"}>
-            <input className='outline-none' name='title' value={title} onChange={(e) => setTitle(e.target.value)}></input>
+            <input className='outline-none' name='title' value={title} onChange={(e) => setTitle(e.target.value)} required></input>
           </InputGroup>
           <SelectInput label={"Frequency"}>
             <select 
@@ -114,7 +122,13 @@ const Home = () => {
         <Card 
         title={"Habits"}
         description={"Manage your habit(s) here"}
-        action={<a onClick={openModal}><PlusCircleIcon className='size-5'></PlusCircleIcon></a>}
+        action={
+        <button 
+        className='rounded-xl
+        shadow-md
+        hover:bg-gray-400'
+        onClick={openModal}><PlusCircleIcon className='size-5'></PlusCircleIcon></button>
+      }
         >
           <table className='relative table-auto'>
             <thead className='border-b border-gray-600'>
@@ -125,42 +139,7 @@ const Home = () => {
                 <th>Action</th>
               </tr>
             </thead>
-            <tbody>
-              {habits.map((item) => (
-                <tr>
-                  <td>{item.id}</td>
-                  <td>{item.title}</td>
-                  <td>{item.frequency}</td>
-                  <td></td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </Card>
-        <Card title={"Badges"}
-        description={"See your achievement(s) here!"}>
-        </Card>
-      </Row>
-      <Row> 
-        <Card title={"Checkin"} description={"Your checkin list(s) of the day"}></Card>
-        <Card title={"Chart"} description={"See your performance"}></Card>
-      </Row>
-      <Row>
-        <Card 
-        title={"Habits"}
-        description={"Manage your habit(s) here"}
-        action={<a onClick={openModal}><PlusCircleIcon className='size-5'></PlusCircleIcon></a>}
-        >
-          <table className='relative table-auto'>
-            <thead className='border-b border-gray-600'>
-              <tr className='text-left'>
-                <th>#</th>
-                <th>Name</th>
-                <th>Frequency</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
+            <tbody key={key}>
               {habits.map((item) => (
                 <tr>
                   <td>{item.id}</td>

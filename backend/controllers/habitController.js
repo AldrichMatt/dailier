@@ -1,5 +1,4 @@
 import { create, getAllHabitByUserId, getHabitById, remove, update} from "../models/habitModel.js";
-import { habitSchema } from "../schema/habit.js";
 import { checksession } from "./authController.js";
 
 // ----------------------
@@ -23,15 +22,6 @@ export const newHabit = async (req, res) => {
     const user_id = checksession(req, res);
 
     if(user_id != null){
-        const validate = habitSchema.validate({
-            title : title,
-            description : description,
-            frequency : frequency
-        })
-
-        if(validate.error){
-            res.json(validate.error.details[0])
-        }else{
             try {
                 res.json(await create(user_id, title, description, frequency));
                 console.log("Habit created successfully!");
@@ -42,10 +32,9 @@ export const newHabit = async (req, res) => {
                 })
                 console.log(error);
             }
-        }
     }else{
         res.json({
-            "message" : "Please Login"
+            message : "Please Login"
         })
     }
 }
@@ -60,25 +49,14 @@ export const updateHabit = async (req, res) => {
     const habit = getHabitById(habit_id);
 
     if(habit != null){   
-        const validate = habitSchema.validate({
-            user_id : user_id,
-            title : title,
-            description : description,
-            frequency : frequency
-        })
-
-        if(validate.error){
-            res.json(validate.error.details[0])
-        }else{
-            try {
-                res.json(await update(habit_id, user_id, title, description, frequency));
-                console.log("Habit updated successfully!");
-            } catch (error) {
-                res.json({
-                    "message" : error.meta,
-                    "code" : error.code
-                })
-            }
+        try {
+            res.json(await update(habit_id, user_id, title, description, frequency));
+            console.log("Habit updated successfully!");
+        } catch (error) {
+            res.json({
+                "message" : error.meta,
+                "code" : error.code
+            })
         }
     }else{
         res.json({

@@ -1,11 +1,9 @@
 import { useState, useEffect } from "react";
-import ReactDOM from 'react-dom/client';
 import axios from 'axios';
 import { useNavigate, useLocation} from "react-router-dom";
 import { Bounce, ToastContainer } from 'react-toastify';
 import { ToastWarning } from "../component/ToastWarning";
 import { ToastSuccess } from "../component/ToastSuccess";
-import { useAuthGuard } from "../auth";
 
 
 const Login = () => {
@@ -48,7 +46,6 @@ const Login = () => {
       });
       
       //login validation
-      const root = ReactDOM.createRoot(document.getElementById('modal'));
       const message = response.data.message
       const user_id = response.data.active_user
       if (user_id != null) {
