@@ -1,4 +1,4 @@
-export default function InputGroup({type, label, name, disabled=false}) {
+export default function InputGroup({label, children}) {
     return (
         <div className="
         flex flex-col
@@ -12,15 +12,16 @@ export default function InputGroup({type, label, name, disabled=false}) {
             ">
                 {label}
             </label>
-            <input type={type} disabled={disabled} required
-            name={name}
+            <div
             className="
             rounded-md
             outline outline-gray-300
             px-2 py-2
             text-sm
-            "
-            ></input>
+            focus-within:outline-violet-500
+            ">
+                {children}
+            </div>
         </div>
     )
 }

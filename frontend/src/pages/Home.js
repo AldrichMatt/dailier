@@ -1,47 +1,76 @@
 import { PlusCircleIcon } from '@heroicons/react/24/outline'
 import { useEffect, useState } from "react"
-import { useAuthGuard } from "../auth"
+import { fetchHabits, useAuthGuard } from "../auth"
 import { Nav } from '../component/Navbar'
 import { Row } from '../component/Row'
 import { Card } from '../component/Card'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { ToastSuccess } from '../component/ToastSuccess'
 import { ToastContainer } from 'react-toastify'
 import { useHabitStore } from '../middleware/useHabitStore'
 import FormModal from '../component/FormModal'
 import InputGroup from '../component/InputGroup'
-import ReactDOM from 'react-dom/client';
 import SelectInput from '../component/SelectInput'
 import { BASE_URL } from '../auth'
 import axios from 'axios'
+import { ToastWarning } from '../component/ToastWarning'
 
 
 const Home = () => {
-
-  const [title, setTitle] = useState('');
-  const [frequency, setFrequency] = useState('');
-  const [description, setDescription] = useState('');
+  
   const habits = useHabitStore(state => state.habits)
   const location = useLocation()
   const success = location.state?.success
+  const setHabits = useHabitStore(state => state.setHabits)
+  const navigate = useNavigate();
+  
+  useAuthGuard();
+  
+  const [showModal, setShowModal] = useState(false)
+  const [key, setKey] = useState(0)
+
+  const [title, setTitle] = useState('')
+  const [frequency, setFrequency] = useState('Daily')
+  const [description, setDescription] = useState('-')
+
+  const openModal = () => setShowModal(true)
+  const closeModal = () => setShowModal(false)
 
   const addHabit = async (e) => {
     e.preventDefault();
     try {
-    axios.post(`${BASE_URL}/api/v1/habits`,
-      {
-        title, description, frequency
-      },{
-        headers : {
-          "Content-Type" : 'application/json'
+      const res = axios.post(`${BASE_URL}/api/v1/habits`,
+        {
+          title, frequency : frequency.toUpperCase(), description
+        },{
+          headers : {
+            "Content-Type" : 'application/json'
+          },
+          withCredentials : true
         }
+      )
+      console.log((await res).data.id);
+      if ((await res).data.id) {
+        closeModal();
+        setTitle("")
+        setFrequency("Daily")
+        setDescription("")
+        ToastSuccess("Habit created successfully!")
+        setKey(key + 1)
+        await fetchHabits(setHabits)
+      }else{
+        ToastWarning((await res).data.message)
+        navigate('/',{
+          state : {
+            warning : "Please Login!"
+          }
+        })  
       }
-    )
     } catch (error) {
-      
+      console.log(error);  
     }
   }
-  useAuthGuard();
+
 
   useEffect(() => {
     if(success){
@@ -50,24 +79,37 @@ const Home = () => {
     }
   },[])
   
-  const openModal = () => {
-    const root = ReactDOM.createRoot(document.getElementById('modalPlace'));
-      root.render(
-      <FormModal title={"Add Habit"} handleSubmit={addHabit}>
-        <InputGroup label={"Habit Name"} name={"title"} type={"text"}></InputGroup>
-        <SelectInput label={"Frequency"} name={"frequency"}>
-          <option>Daily</option>
-          <option>Weekly</option>
-          <option>Monthly</option>
-          <option>Yearly</option>
-        </SelectInput>
-        <InputGroup label={"Description"} name={"description"} type={"text"}></InputGroup>
-      </FormModal>
-    )
-  }
   return (
     <>
     <div id="modalPlace"></div>
+    {
+      showModal && (
+        <FormModal
+          title={"Create new habit"}
+          onClose = {closeModal}
+          handleSubmit={addHabit}
+        >
+          <InputGroup label={"Title"}>
+            <input className='outline-none' name='title' value={title} onChange={(e) => setTitle(e.target.value)} required></input>
+          </InputGroup>
+          <SelectInput label={"Frequency"}>
+            <select 
+            name="frequency"
+            className="outline-none w-full"
+            value={frequency}
+            onChange={(e) => setFrequency(e.target.value)}>
+              <option value="DAILY">Daily</option>
+              <option value="WEEKLY">Weekly</option>
+              <option value="MONTHLY">Monthly</option>
+              <option value="YEARLY">Yearly</option>
+            </select>
+          </SelectInput>
+          <InputGroup label={"Description"}>
+            <textarea className='w-full outline-none' name='description' value={description} onChange={(e) => setDescription(e.target.value)}></textarea>
+          </InputGroup>
+        </FormModal>
+      )
+    }
     <div className='h-screen bg-slate-300'>
     <ToastContainer theme='colored' autoClose='3500'></ToastContainer>
     <Nav></Nav>
@@ -80,7 +122,13 @@ const Home = () => {
         <Card 
         title={"Habits"}
         description={"Manage your habit(s) here"}
-        action={<a onClick={openModal}><PlusCircleIcon className='size-5'></PlusCircleIcon></a>}
+        action={
+        <button 
+        className='rounded-xl
+        shadow-md
+        hover:bg-gray-400'
+        onClick={openModal}><PlusCircleIcon className='size-5'></PlusCircleIcon></button>
+      }
         >
           <table className='relative table-auto'>
             <thead className='border-b border-gray-600'>
@@ -91,7 +139,7 @@ const Home = () => {
                 <th>Action</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody key={key}>
               {habits.map((item) => (
                 <tr key={item.id}>
                   <td>{item.id}</td>

@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import ReactDOM from 'react-dom/client';
 import axios from 'axios';
 import { useNavigate, useLocation} from "react-router-dom";
 import { Bounce, ToastContainer } from 'react-toastify';

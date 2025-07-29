@@ -23,7 +23,7 @@ app.use(cors({
 
 app.use(session({
   secret: process.env.SESSION_SECRET,
-  resave: false,
+  resave: true,
   saveUninitialized: false,
   cookie: {
     maxAge: 1000 * 60 * 30, // 30 menit

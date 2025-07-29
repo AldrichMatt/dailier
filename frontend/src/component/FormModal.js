@@ -1,23 +1,25 @@
-'use client'
-
-import { useState } from 'react'
 import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
-import { BASE_URL } from '../auth'
 
-export default function FormModal({title, children, action, handleSubmit}) {
-  const [open, setOpen] = useState(true)
-
+export default function FormModal({title, onClose, children, handleSubmit}) {
   return (
-      <Dialog open={open} onClose={setOpen} className="relative z-10">
+      <Dialog open={true} onClose={onClose} className="relative z-10">
         <DialogBackdrop
           transition
-          className="fixed inset-0 bg-gray-500/75 transition-opacity data-closed:opacity-0 data-enter:duration-300 data-enter:ease-out data-leave:duration-200 data-leave:ease-in"
+          className="
+          fixed 
+          inset-0 
+          bg-gray-500/75 
+          transition-opacity 
+          data-closed:opacity-0 
+          data-enter:duration-300 
+          data-enter:ease-out 
+          data-leave:duration-200 
+          data-leave:ease-in"
         />
-
         <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
-          <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-          <form action={BASE_URL+action} onSubmit={handleSubmit} method='post'>
+          <div className="flex sm:min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+          <form onSubmit={handleSubmit} method='post'>
             <DialogPanel
               transition
               className="
@@ -46,7 +48,7 @@ export default function FormModal({title, children, action, handleSubmit}) {
                 <div className="sm:flex sm:items-center sm:justify-end">
                   <button
                     type='button'
-                    onClick={() => setOpen(false)}
+                    onClick={onClose}
                     className="absolute top-2 right-2 p-1 rounded hover:bg-gray-100 transition"
                     aria-label="Close modal"
                     >
@@ -64,7 +66,7 @@ export default function FormModal({title, children, action, handleSubmit}) {
               </div>
             <div className="flex flex-row pb-3 w-full justify-end">
                 <button
-                  type="button"
+                  type="submit"
                   data-autofocus
                   className="inline-flex w-full justify-center rounded-md bg-green-500 px-3 py-2 mx-1 text-sm font-semibold text-white shadow-xs hover:bg-green-600 sm:mt-0 sm:w-auto"
                   >
@@ -73,7 +75,7 @@ export default function FormModal({title, children, action, handleSubmit}) {
                 <button
                   type="button"
                   data-autofocus
-                  onClick={() => setOpen(false)}
+                  onClick={onClose}
                   className="inline-flex w-full justify-center rounded-md bg-white px-3 py-2 mx-1 text-sm font-semibold text-gray-900 shadow-xs ring-1 ring-gray-300 ring-inset hover:bg-gray-50 sm:mt-0 sm:w-auto"
                   >
                   Cancel
