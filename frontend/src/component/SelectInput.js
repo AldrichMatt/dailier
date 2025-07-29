@@ -1,4 +1,4 @@
-export default function SelectInput({label, name, children}){
+export default function SelectInput({label, name, value, onChange, children}){
     return (
         <div className="
         flex flex-col
@@ -12,15 +12,16 @@ export default function SelectInput({label, name, children}){
             ">
                 {label}
             </label>
-            <select className="
+            <div
+            className="
             rounded-md
             outline outline-gray-300
             px-2 py-2
             text-sm
-            "
-            >
+            focus-within:outline-violet-500
+            ">
                 {children}
-            </select>
+            </div>
         </div>
     )
 }
