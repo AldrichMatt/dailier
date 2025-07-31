@@ -9,6 +9,7 @@ export const getAllHabitByUserId = async (req) => {
             id : true,
             title : true,
             description : true,
+            time : true,
             frequency : true,
             created_at : true,
             updated_at : true
@@ -26,6 +27,7 @@ export const getHabitById = async (habit_id) => {
             user_id : true,
             title : true,
             description : true,
+            time : true,
             frequency : true
         },
         where : {
@@ -34,13 +36,14 @@ export const getHabitById = async (habit_id) => {
     })
 }
 
-export const create = async (user_id, title, description, frequency) => {
+export const create = async (user_id, title, description, time, frequency) => {
     const created_at = getTimestamps().created_at;
     return await prisma.habits.create({
         data : {
             user_id : user_id,
             title : title,
             description : description,
+            time : time,
             frequency : frequency,
             created_at : created_at
         },
@@ -49,18 +52,20 @@ export const create = async (user_id, title, description, frequency) => {
             user_id : true,
             title : true,
             description : true,
+            time : true,
             frequency : true
         }
     })
 }
 
-export const update = async (habit_id, user_id, title, description, frequency) => {
+export const update = async (habit_id, user_id, title, description, time, frequency) => {
     const updated_at = getTimestamps().updated_at;
     return await prisma.habits.update({
         data : {
             user_id : user_id,
             title : title,
             description : description,
+            time : time,
             frequency : frequency,
             updated_at : updated_at
         },
@@ -72,6 +77,7 @@ export const update = async (habit_id, user_id, title, description, frequency) =
             user_id : true,
             title : true,
             description : true,
+            time : true,
             frequency : true
         }
     })

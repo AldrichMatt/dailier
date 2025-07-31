@@ -1,4 +1,4 @@
-export const Card = ({title, description, children, action}) => {
+export function Card ({title, description, children, action}) {
     return(
         <div className="
         flex flex-col flex-grow

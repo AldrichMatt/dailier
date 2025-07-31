@@ -23,10 +23,10 @@ model habits {
   user_id        Int              @map("user_id")
   title          String
   description    String?
+  time           String           @default("08:00")
   frequency      frequency        @default(DAILY)
   created_at     DateTime
   updated_at     DateTime         @default(now())
-  time           String           @default("08:00")
   habit_checkins habit_checkins[]
   user           users            @relation(fields: [user_id], references: [id])
 }

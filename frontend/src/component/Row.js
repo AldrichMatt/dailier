@@ -1,4 +1,4 @@
-export const Row = ({children}) => {
+export function Row({children}){
     return(
         <div className="
         flex flex-row

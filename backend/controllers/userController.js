@@ -10,7 +10,7 @@ const { optional } = pkg
 // use this instead of the one in authController
 // ----------------------
 export const checkUser = async (req, res) => {
-    const user_id = checksession(req, res);
+    const user_id = checksession(req);
     if (user_id) {
         const user = await getUserById(user_id)
 

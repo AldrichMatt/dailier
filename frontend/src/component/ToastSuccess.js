@@ -1,4 +1,3 @@
-import { CheckCircleIcon } from "@heroicons/react/24/outline";
 import { toast } from "react-toastify";
 
 export const ToastSuccess = (message) => toast.success(({ closeToast }) => 

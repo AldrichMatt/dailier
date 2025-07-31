@@ -14,6 +14,9 @@ import SelectInput from '../component/SelectInput'
 import { BASE_URL } from '../auth'
 import axios from 'axios'
 import { ToastWarning } from '../component/ToastWarning'
+import { DeleteButton } from '../component/DeleteButton'
+import ModalConfirm from '../component/ModalConfirm'
+import { EditButton } from '../component/EditButton'
 
 
 const Home = () => {
@@ -26,22 +29,28 @@ const Home = () => {
   
   useAuthGuard();
   
-  const [showModal, setShowModal] = useState(false)
+  const [modalState, setModalState] = useState('add')
+  const [habit_id, setHabitId] = useState('')
+  const [addConfirmModal, showConfirmModal] = useState(false)
+  const [addHabitModal, showHabitModal] = useState(false)
   const [key, setKey] = useState(0)
 
   const [title, setTitle] = useState('')
+  const [time, setTime] = useState('')
   const [frequency, setFrequency] = useState('Daily')
-  const [description, setDescription] = useState('-')
+  const [description, setDescription] = useState('')
 
-  const openModal = () => setShowModal(true)
-  const closeModal = () => setShowModal(false)
+  const habitModal = () => addHabitModal ? showHabitModal(false) : showHabitModal(true)
+  const confirmModal = () => addConfirmModal ? showConfirmModal(false) : showConfirmModal(true)
+
+  var habitCount = 1;
 
   const addHabit = async (e) => {
     e.preventDefault();
     try {
       const res = axios.post(`${BASE_URL}/api/v1/habits`,
         {
-          title, frequency : frequency.toUpperCase(), description
+          title, frequency : frequency.toUpperCase(), time, description
         },{
           headers : {
             "Content-Type" : 'application/json'
@@ -49,12 +58,12 @@ const Home = () => {
           withCredentials : true
         }
       )
-      console.log((await res).data.id);
       if ((await res).data.id) {
-        closeModal();
+        habitModal();
         setTitle("")
         setFrequency("Daily")
         setDescription("")
+        setTime("")
         ToastSuccess("Habit created successfully!")
         setKey(key + 1)
         await fetchHabits(setHabits)
@@ -62,13 +71,48 @@ const Home = () => {
         ToastWarning((await res).data.message)
         navigate('/',{
           state : {
-            warning : "Please Login!"
+            warning : "Please login first"
           }
         })  
       }
     } catch (error) {
       console.log(error);  
     }
+  }
+
+  const handleEdit = async () => {
+    habits
+  }
+
+  const handleDelete = async (id) => {
+    try{
+      // await axios.post(`${BASE_URL}/habit/delete`)
+
+      const res = axios.delete(`${BASE_URL}/api/v1/habits`,{
+        data :{
+          habit_id : id
+        },
+        withCredentials : true
+      })
+      if((await res).data.code){
+        (await res).data.code === 401 ?
+        navigate('/',{
+          state : {
+            warning : (await res).data.message
+          }
+        })  :
+        ToastWarning(`${(await res).data.message.cause} please try again`)
+      }else{
+        ToastSuccess((await res).data.message)
+        confirmModal()
+      }
+
+      setKey(key + 1)
+      await fetchHabits(setHabits)
+    }catch(error){
+      console.log(error);
+    }
+    
   }
 
 
@@ -81,16 +125,20 @@ const Home = () => {
   
   return (
     <>
-    <div id="modalPlace"></div>
     {
-      showModal && (
+      addHabitModal && (
         <FormModal
-          title={"Create new habit"}
-          onClose = {closeModal}
+          title={modalState == "add" ? "Create new habit" : "Edit habit"}
+          onClose = {() => {
+            setModalState("")
+            habitModal()}}
           handleSubmit={addHabit}
         >
           <InputGroup label={"Title"}>
             <input className='outline-none' name='title' value={title} onChange={(e) => setTitle(e.target.value)} required></input>
+          </InputGroup>
+          <InputGroup label={"Time"}>
+            <input className='outline-none' name='time' type='time' value={time} onChange={(e) => setTime(e.target.value)} required></input>
           </InputGroup>
           <SelectInput label={"Frequency"}>
             <select 
@@ -110,7 +158,12 @@ const Home = () => {
         </FormModal>
       )
     }
-    <div className='h-screen bg-slate-300'>
+    {
+      addConfirmModal && (
+        <ModalConfirm message={"Delete Habit?"} state={"danger"} onClose={confirmModal} onConfirm={() => handleDelete(habit_id)}></ModalConfirm>
+      )
+    }
+    <div className='min-h-screen h-full bg-slate-300'>
     <ToastContainer theme='colored' autoClose='3500'></ToastContainer>
     <Nav></Nav>
       <div className="relative isolate px-6 py-10 lg:px-8">
@@ -127,7 +180,10 @@ const Home = () => {
         className='rounded-xl
         shadow-md
         hover:bg-gray-400'
-        onClick={openModal}><PlusCircleIcon className='size-5'></PlusCircleIcon></button>
+        onClick={() => {
+          setModalState("add")
+          habitModal()
+        }}><PlusCircleIcon className='size-5'></PlusCircleIcon></button>
       }
         >
           <table className='relative table-auto'>
@@ -136,16 +192,38 @@ const Home = () => {
                 <th>#</th>
                 <th>Name</th>
                 <th>Frequency</th>
-                <th>Action</th>
+                <th>Time</th>
+                <th className='text-center'>Action</th>
               </tr>
             </thead>
             <tbody key={key}>
               {habits.map((item) => (
-                <tr>
-                  <td>{item.id}</td>
+                <tr className='border-b-2 border-violet-400'>
+                  <td>{habitCount++}</td>
                   <td>{item.title}</td>
                   <td>{item.frequency}</td>
-                  <td></td>
+                  <td>{item.time}</td>
+                  <td className='text-center py-2'>
+                    <div className='
+                    flex
+                    flex-row
+                    flex-shrink
+                    flex-grow
+                    justify-start
+                    h-full
+                    align-middle
+                    '>
+                    <DeleteButton onClick={() => {
+                      setHabitId(item.id)
+                      confirmModal()
+                      }}/>
+                    <EditButton onClick={() => {
+                      setHabitId(item.id)
+                      setModalState("edit")
+                      habitModal()
+                    }}/>
+                    </div>
+                  </td>
                 </tr>
               ))}
             </tbody>
