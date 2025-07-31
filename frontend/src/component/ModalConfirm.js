@@ -1,11 +1,7 @@
-'use client'
-
-import { useState } from 'react'
 import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/react'
 import { CheckCircleIcon, ExclamationTriangleIcon, ExclamationCircleIcon, XMarkIcon } from '@heroicons/react/24/outline'
 
-export default function ModalConfirm({state, message, onConfirm}) {
-  const [open, setOpen] = useState(true)
+export default function ModalConfirm({state, message, onConfirm, onClose}) {
   const confirmColorClass = {
   danger: 'bg-red-600 hover:bg-red-500',
   notify: 'bg-yellow-600 hover:bg-yellow-500',
@@ -17,7 +13,7 @@ export default function ModalConfirm({state, message, onConfirm}) {
       confirm : <CheckCircleIcon aria-hidden="true" className="size-6 text-green-600" />,
   }[state] || <ExclamationCircleIcon aria-hidden="true" className="size-6 text-gray-600" />
   return (
-      <Dialog open={open} onClose={setOpen} className="relative z-10">
+      <Dialog open={true} onClose={onClose} className="relative z-10">
         <DialogBackdrop
           transition
           className="fixed inset-0 bg-gray-500/75 transition-opacity data-closed:opacity-0 data-enter:duration-300 data-enter:ease-out data-leave:duration-200 data-leave:ease-in"
@@ -49,7 +45,7 @@ export default function ModalConfirm({state, message, onConfirm}) {
                 <div className="sm:flex sm:items-center sm:justify-end">
                   <button
                     type='button'
-                    onClick={() => setOpen(false)}
+                    onClick={onClose}
                     className="absolute top-2 right-2 p-1 rounded hover:bg-gray-100 transition"
                     aria-label="Close modal"
                   >
@@ -105,7 +101,7 @@ export default function ModalConfirm({state, message, onConfirm}) {
                 <button
                   type="button"
                   data-autofocus
-                  onClick={() => setOpen(false)}
+                  onClick={onClose}
                   className="inline-flex w-full justify-center rounded-md bg-white px-3 py-2 mx-1 text-sm font-semibold text-gray-900 shadow-xs ring-1 ring-gray-300 ring-inset hover:bg-gray-50 sm:mt-0 sm:w-auto"
                 >
                   Cancel

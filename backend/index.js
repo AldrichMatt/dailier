@@ -41,7 +41,6 @@ app.post("/users/update", updateUser)
 app.post("/users/delete", deleteUser)
 
 app.post("/habits/update", updateHabit)
-app.post("/habits/delete", deleteHabit)
 
 // REQUESTS FOR USERS
 app.post("/api/v1/signup", newUser) //done
@@ -50,6 +49,7 @@ app.get("/api/v1/logout", logout) //done
 
 app.get("/api/v1/habits", getHabits) //done
 app.post("/api/v1/habits", newHabit) //done
+app.delete("/api/v1/habits", deleteHabit) //done
 app.get("/api/v1/habits/:id/checkin", checkinReport) //done
 app.get("/api/v1/progress/:id", checkinProgress) //done
 

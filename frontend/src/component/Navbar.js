@@ -12,7 +12,7 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
-export const Nav = () => {
+export function Nav(){
     return(
         <Disclosure as="nav" className="bg-slate-800">
       <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">

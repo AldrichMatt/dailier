@@ -30,7 +30,7 @@ export const auth = async ({email, password}) => {
 // check current active user and return user_id
 // if none, return please login
 // ----------------------
-export const checksession = (req, res) => {
+export const checksession = (req) => {
   if(req.session.user_id){
     return req.session.user_id
   }else{
