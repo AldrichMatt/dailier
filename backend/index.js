@@ -50,6 +50,7 @@ app.get("/api/v1/logout", logout) //done
 app.get("/api/v1/habits", getHabits) //done
 app.post("/api/v1/habits", newHabit) //done
 app.delete("/api/v1/habits", deleteHabit) //done
+app.put("/api/v1/habits", updateHabit)
 app.get("/api/v1/habits/:id/checkin", checkinReport) //done
 app.get("/api/v1/progress/:id", checkinProgress) //done
 

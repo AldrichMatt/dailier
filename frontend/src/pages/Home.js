@@ -17,11 +17,14 @@ import { ToastWarning } from '../component/ToastWarning'
 import { DeleteButton } from '../component/DeleteButton'
 import ModalConfirm from '../component/ModalConfirm'
 import { EditButton } from '../component/EditButton'
+import { useUserStore } from '../middleware/useUserStore'
 
 
 const Home = () => {
   
   const habits = useHabitStore(state => state.habits)
+  const user = useUserStore(state => state.user)
+  const user_id = user.id
   const location = useLocation()
   const success = location.state?.success
   const setHabits = useHabitStore(state => state.setHabits)
@@ -34,6 +37,7 @@ const Home = () => {
   const [addConfirmModal, showConfirmModal] = useState(false)
   const [addHabitModal, showHabitModal] = useState(false)
   const [key, setKey] = useState(0)
+  
 
   const [title, setTitle] = useState('')
   const [time, setTime] = useState('')
@@ -44,6 +48,13 @@ const Home = () => {
   const confirmModal = () => addConfirmModal ? showConfirmModal(false) : showConfirmModal(true)
 
   var habitCount = 1;
+
+  const clearForm = () => {
+    setTitle('')
+    setTime('')
+    setFrequency('Daily')
+    setDescription('')
+  }
 
   const addHabit = async (e) => {
     e.preventDefault();
@@ -60,13 +71,10 @@ const Home = () => {
       )
       if ((await res).data.id) {
         habitModal();
-        setTitle("")
-        setFrequency("Daily")
-        setDescription("")
-        setTime("")
-        ToastSuccess("Habit created successfully!")
-        setKey(key + 1)
-        await fetchHabits(setHabits)
+        clearForm();
+        ToastSuccess("Habit created successfully!");
+        setKey(key + 1);
+        await fetchHabits(setHabits);
       }else{
         ToastWarning((await res).data.message)
         navigate('/',{
@@ -80,14 +88,56 @@ const Home = () => {
     }
   }
 
-  const handleEdit = async () => {
-    habits
+  const findHabit = (habit_id) => {
+    for (let i = 0; i < habits.length; i++) {
+      const id = habits[i]["id"];
+      if (id === habit_id) {
+        return habits[i]
+      }
+    }
+  }
+
+  const setEdit = (id) => {
+    const habit = findHabit(id)
+    if(habit){
+      setTitle(habit.title)
+      setTime(habit.time)
+      setFrequency(habit.frequency)
+      setDescription(habit.description)
+    }
+  }
+
+  const editHabit = async (e) => {
+    e.preventDefault();
+    try {
+      const res = axios.put(`${BASE_URL}/api/v1/habits`,{
+        habit_id : habit_id,
+        user_id : user_id,
+        title : title,
+        description : description,
+        frequency : frequency,
+        time : time
+      })
+      if ((await res).data.id) {
+        habitModal();
+        ToastSuccess("Habit edited successfully!");
+        setKey(key + 1);
+        await fetchHabits(setHabits);
+      }else{
+        ToastWarning((await res).data.message)
+        navigate('/',{
+          state : {
+            warning : "Please login first"
+          }
+        })  
+      }
+    } catch (error) {
+      
+    }
   }
 
   const handleDelete = async (id) => {
     try{
-      // await axios.post(`${BASE_URL}/habit/delete`)
-
       const res = axios.delete(`${BASE_URL}/api/v1/habits`,{
         data :{
           habit_id : id
@@ -128,17 +178,14 @@ const Home = () => {
     {
       addHabitModal && (
         <FormModal
-          title={modalState == "add" ? "Create new habit" : "Edit habit"}
+          title={modalState === "add" ? "Create new habit" : "Edit habit"}
           onClose = {() => {
             setModalState("")
             habitModal()}}
-          handleSubmit={addHabit}
+          handleSubmit={modalState === "add" ? addHabit : editHabit}
         >
           <InputGroup label={"Title"}>
             <input className='outline-none' name='title' value={title} onChange={(e) => setTitle(e.target.value)} required></input>
-          </InputGroup>
-          <InputGroup label={"Time"}>
-            <input className='outline-none' name='time' type='time' value={time} onChange={(e) => setTime(e.target.value)} required></input>
           </InputGroup>
           <SelectInput label={"Frequency"}>
             <select 
@@ -152,6 +199,9 @@ const Home = () => {
               <option value="YEARLY">Yearly</option>
             </select>
           </SelectInput>
+          <InputGroup label={"Time"}>
+            <input className='outline-none' name='time' type='time' value={time} onChange={(e) => setTime(e.target.value)} required></input>
+          </InputGroup>
           <InputGroup label={"Description"}>
             <textarea className='w-full outline-none' name='description' value={description} onChange={(e) => setDescription(e.target.value)}></textarea>
           </InputGroup>
@@ -160,7 +210,7 @@ const Home = () => {
     }
     {
       addConfirmModal && (
-        <ModalConfirm message={"Delete Habit?"} state={"danger"} onClose={confirmModal} onConfirm={() => handleDelete(habit_id)}></ModalConfirm>
+        <ModalConfirm message={`Delete habit ${findHabit(habit_id).title} ?`} state={"danger"} onClose={confirmModal} onConfirm={() => handleDelete(habit_id)}></ModalConfirm>
       )
     }
     <div className='min-h-screen h-full bg-slate-300'>
@@ -168,7 +218,9 @@ const Home = () => {
     <Nav></Nav>
       <div className="relative isolate px-6 py-10 lg:px-8">
       <Row> 
-        <Card title={"Checkin"} description={"Your checkin list(s) of the day"}></Card>
+        <Card title={"Checkin"} description={"Your habit checkin of the day"}>
+          test
+        </Card>
         <Card title={"Chart"} description={"See your performance"}></Card>
       </Row>
       <Row>
@@ -182,6 +234,7 @@ const Home = () => {
         hover:bg-gray-400'
         onClick={() => {
           setModalState("add")
+          clearForm()
           habitModal()
         }}><PlusCircleIcon className='size-5'></PlusCircleIcon></button>
       }
@@ -209,7 +262,7 @@ const Home = () => {
                     flex-row
                     flex-shrink
                     flex-grow
-                    justify-start
+                    justify-center
                     h-full
                     align-middle
                     '>
@@ -220,6 +273,7 @@ const Home = () => {
                     <EditButton onClick={() => {
                       setHabitId(item.id)
                       setModalState("edit")
+                      setEdit(item.id)
                       habitModal()
                     }}/>
                     </div>

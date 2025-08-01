@@ -38,10 +38,12 @@ export default function ModalConfirm({state, message, onConfirm, onClose}) {
               data-enter:ease-out 
               data-leave:duration-200 
               data-leave:ease-in 
-              sm:my-8 sm:w-full sm:max-w-48 sm:items-center sm:max-h-xs
+              sm:my-8 sm:w-full sm:max-w-72 sm:items-center sm:max-h-xs
               data-closed:sm:translate-y-0 data-closed:sm:scale-95"
             >
-              <div className="bg-white px-4 pt-2 sm:pb-4">
+              <div className="
+              flex flex-col flex-shrink
+              bg-white px-4 pt-2 sm:pb-4">
                 <div className="sm:flex sm:items-center sm:justify-end">
                   <button
                     type='button'
@@ -84,7 +86,7 @@ export default function ModalConfirm({state, message, onConfirm, onClose}) {
                 </div>
                 <div className="sm:flex sm:items-center sm:justify-center pt-4">
                   <div className="mt-3 sm:mt-0">
-                    <DialogTitle as="h3" className="text-center font-semibold text-gray-900">
+                    <DialogTitle className="text-center font-semibold text-sm text-gray-900">
                       {message}
                     </DialogTitle>
                   </div>
