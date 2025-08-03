@@ -44,23 +44,23 @@ export const newHabit = async (req, res) => {
 // else return habit not found
 // ----------------------
 export const updateHabit = async (req, res) => {
-    const {habit_id, user_id, title, description, frequency} = req.body;
+    const {habit_id, title, description, frequency, time} = req.body;
 
     const habit = getHabitById(habit_id);
 
     if(habit != null){   
         try {
-            res.json(await update(habit_id, user_id, title, description, frequency));
+            res.json(await update(habit_id, title, description, time, frequency));
             console.log("Habit updated successfully!");
         } catch (error) {
             res.json({
-                "message" : error.meta,
-                "code" : error.code
+                message : error.meta,
+                code : error.code
             })
         }
     }else{
         res.json({
-            "message" : "Habit not found"
+            message : "Habit not found"
         })
     }
 }

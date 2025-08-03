@@ -58,11 +58,10 @@ export const create = async (user_id, title, description, time, frequency) => {
     })
 }
 
-export const update = async (habit_id, user_id, title, description, time, frequency) => {
+export const update = async (habit_id, title, description, time, frequency) => {
     const updated_at = getTimestamps().updated_at;
     return await prisma.habits.update({
         data : {
-            user_id : user_id,
             title : title,
             description : description,
             time : time,
