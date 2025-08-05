@@ -8,10 +8,11 @@ const prisma = new PrismaClient()
 // create new habit_checkins record in database
 // 
 // ----------------------
-export const createCheckin = async (habit_id) => {
+export const createCheckin = async (habit_id, checkin_datetime) => {
     return await prisma.habit_checkins.create({
         data : {
             habit_id : habit_id,
+            checkin_datetime : checkin_datetime,
             completed : false
         },
         select : {

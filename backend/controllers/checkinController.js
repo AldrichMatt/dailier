@@ -1,4 +1,5 @@
 import { checkinComplete, getByHabitId, getSpecial } from "../models/checkinModel.js"
+import { expressionGenerator } from "../models/scheduleModel.js";
 import { checkUser } from "./userController.js"
 
 // ----------------------
@@ -44,4 +45,13 @@ export const checkinProgress = async (req, res) => {
         })
     }
 
+}
+
+// ----------------------
+// create new checkin
+// this function will be used automatically by cron 
+// so don't set the header result
+// ----------------------
+export const checkinHandler = async () => {
+    
 }

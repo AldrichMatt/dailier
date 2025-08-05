@@ -4,7 +4,7 @@ import { loginUser, getUsers, newUser, updateUser, deleteUser, checkUser, logout
 import { deleteHabit, getHabits, newHabit, updateHabit } from "./controllers/habitController.js";
 import session from "express-session";
 import dotenv from 'dotenv';
-import { checkinReport, checkinProgress } from "./controllers/checkinController.js";
+import { checkinReport, checkinProgress, checkinHandler } from "./controllers/checkinController.js";
 import cookieParser from "cookie-parser";
 import { refreshsession } from "./controllers/authController.js";
 
@@ -42,6 +42,8 @@ app.post("/users/delete", deleteUser)
 
 app.post("/habits/update", updateHabit)
 
+app.post("/api/v1/admin/checkin", checkinHandler)
+
 // REQUESTS FOR USERS
 app.post("/api/v1/signup", newUser) //done
 app.post("/api/v1/login", loginUser) //done
@@ -50,10 +52,9 @@ app.get("/api/v1/logout", logout) //done
 app.get("/api/v1/habits", getHabits) //done
 app.post("/api/v1/habits", newHabit) //done
 app.delete("/api/v1/habits", deleteHabit) //done
-app.put("/api/v1/habits", updateHabit)
+app.put("/api/v1/habits", updateHabit) //done
 app.get("/api/v1/habits/:id/checkin", checkinReport) //done
 app.get("/api/v1/progress/:id", checkinProgress) //done
-
 
 
 app.listen(PORT,() => {

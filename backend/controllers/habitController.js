@@ -1,5 +1,6 @@
 import { create, getAllHabitByUserId, getHabitById, remove, update} from "../models/habitModel.js";
 import { checksession } from "./authController.js";
+import { expressionGenerator } from "../models/scheduleModel.js";
 
 // ----------------------
 // return all habits
@@ -7,8 +8,8 @@ import { checksession } from "./authController.js";
 // ----------------------
 export const getHabits = async (req, res) => {
     const habitsData = await getAllHabitByUserId(req);
-    res.json({
-    habits : habitsData
+    return res.json({
+        habits : habitsData
     });
 }
 
@@ -23,17 +24,17 @@ export const newHabit = async (req, res) => {
 
     if(user_id != null){
             try {
-                res.json(await create(user_id, title, description, time, frequency));
-                console.log("Habit created successfully!");
+                const expression = expressionGenerator(req)
+                const result = await create(user_id, title, description, time, expression, frequency)
+                return res.json(result);
             } catch (error) {
-                res.json({
-                        "message" : error.meta,
-                        "code" : error.code
+                return res.json({
+                        message : error.meta,
+                        code : error.code
                 })
-                console.log(error);
             }
     }else{
-        res.json({
+        return res.json({
             message : "Please login first"
         })
     }
@@ -50,16 +51,15 @@ export const updateHabit = async (req, res) => {
 
     if(habit != null){   
         try {
-            res.json(await update(habit_id, title, description, time, frequency));
-            console.log("Habit updated successfully!");
+            return res.json(await update(habit_id, title, description, time, frequency));
         } catch (error) {
-            res.json({
+            return res.json({
                 message : error.meta,
                 code : error.code
             })
         }
     }else{
-        res.json({
+        return res.json({
             message : "Habit not found"
         })
     }
@@ -78,17 +78,17 @@ export const deleteHabit = async (req, res) => {
     if(user_id != null){
         try {
             await remove(habit_id);
-            res.json({
+            return res.json({
                 message : "Habit " + habit.title + " deleted successfully!"
             })
         }catch (error) {
-            res.json({
+            return res.json({
                 message : error.meta,
                 code : error.code
             })
         }
     }else{
-        res.json({
+        return res.json({
             message : "Please login first",
             code : 401
         })

@@ -36,7 +36,7 @@ export const getHabitById = async (habit_id) => {
     })
 }
 
-export const create = async (user_id, title, description, time, frequency) => {
+export const create = async (user_id, title, description, time, expression, frequency) => {
     const created_at = getTimestamps().created_at;
     return await prisma.habits.create({
         data : {
@@ -44,6 +44,7 @@ export const create = async (user_id, title, description, time, frequency) => {
             title : title,
             description : description,
             time : time,
+            expression : expression,
             frequency : frequency,
             created_at : created_at
         },
