@@ -36,6 +36,17 @@ export const getHabitById = async (habit_id) => {
     })
 }
 
+export const getHabitbyFrequency = async (frequency) => {
+    return await prisma.habits.findMany({
+        select : {
+            id : true,
+            user_id : true
+        }, where : {
+            frequency : frequency
+        }
+    })
+}
+
 export const create = async (user_id, title, description, time, expression, frequency) => {
     const created_at = getTimestamps().created_at;
     return await prisma.habits.create({

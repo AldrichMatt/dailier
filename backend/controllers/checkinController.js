@@ -1,4 +1,5 @@
 import { checkinComplete, getByHabitId, getSpecial } from "../models/checkinModel.js"
+import { getHabitbyFrequency } from "../models/habitModel.js";
 import { expressionGenerator } from "../models/scheduleModel.js";
 import { checkUser } from "./userController.js"
 
@@ -53,5 +54,12 @@ export const checkinProgress = async (req, res) => {
 // so don't set the header result
 // ----------------------
 export const checkinHandler = async () => {
+    const dailyHabits = await getHabitbyFrequency("DAILY")
     
+    console.log(dailyHabits);
+    
+
+    // const weeklyHabits = await getHabitbyFrequency("WEEKLY")
+    // const monthlyHabits = await getHabitbyFrequency("MONTHLY")
+    // const yearlyHabits = await getHabitbyFrequency("YEARLY")
 }

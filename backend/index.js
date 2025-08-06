@@ -7,6 +7,7 @@ import dotenv from 'dotenv';
 import { checkinReport, checkinProgress, checkinHandler } from "./controllers/checkinController.js";
 import cookieParser from "cookie-parser";
 import { refreshsession } from "./controllers/authController.js";
+import cron from 'node-cron'
 
 dotenv.config();
 
@@ -42,8 +43,6 @@ app.post("/users/delete", deleteUser)
 
 app.post("/habits/update", updateHabit)
 
-app.post("/api/v1/admin/checkin", checkinHandler)
-
 // REQUESTS FOR USERS
 app.post("/api/v1/signup", newUser) //done
 app.post("/api/v1/login", loginUser) //done
@@ -59,5 +58,13 @@ app.get("/api/v1/progress/:id", checkinProgress) //done
 
 app.listen(PORT,() => {
     console.log("Server is running on port 5000 "); 
+    checkinHandler()
+    cron.schedule(`0 8 */1 * *`,
+    checkinHandler,
+      {
+        noOverlap : true,
+      }
+    )
+    
 });
 
