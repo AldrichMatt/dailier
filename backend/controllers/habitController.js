@@ -1,16 +1,24 @@
 import { create, getAllHabitByUserId, getHabitById, remove, update} from "../models/habitModel.js";
 import { checksession } from "./authController.js";
-import { expressionGenerator } from "../models/scheduleModel.js";
+import { sendToUser } from "../middleware/checkinWebSocket.js";
 
 // ----------------------
 // return all habits
 // 
 // ----------------------
 export const getHabits = async (req, res) => {
-    const habitsData = await getAllHabitByUserId(req);
-    return res.json({
-        habits : habitsData
-    });
+    const user_id = checksession(req);
+    console.log(user_id);
+    if(user_id){
+        const habitsData = await getAllHabitByUserId(user_id);
+        return res.json({
+            habits : habitsData
+        });
+    }else{
+        return res.json({
+            message : "Please login first"
+        })
+    }
 }
 
 // ----------------------
@@ -22,12 +30,13 @@ export const newHabit = async (req, res) => {
 
     const user_id = checksession(req);
 
-    if(user_id != null){
-            try {
-                const expression = expressionGenerator(req)
-                const result = await create(user_id, title, description, time, expression, frequency)
+    if(user_id){
+        try {
+                const result = await create(user_id, title, description, time, frequency)
+                sendToUser(user_id, result)
                 return res.json(result);
             } catch (error) {
+                console.log(error);
                 return res.json({
                         message : error.meta,
                         code : error.code

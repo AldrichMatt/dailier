@@ -19,14 +19,14 @@ const Login = () => {
 
   
   useEffect(() => {
-    if(warning){
-      ToastWarning(warning)
-      window.history.replaceState({}, '');
-    }else if(success){
-      ToastSuccess(success)
-      window.history.replaceState({}, '');
-    }
-  },[])
+  if(warning){
+    ToastWarning(warning)
+    window.history.replaceState({}, '');
+  }else if(success){
+    ToastSuccess(success)
+    window.history.replaceState({}, '');
+  }
+  }, [])
 
   
   //handle form submission

@@ -7,14 +7,11 @@ import dotenv from 'dotenv';
 import { checkinReport, checkinProgress, checkinHandler } from "./controllers/checkinController.js";
 import cookieParser from "cookie-parser";
 import { refreshsession } from "./controllers/authController.js";
-import cron from 'node-cron'
-import { setupWebSocket } from "./controllers/setupWebSocket.js";
-import http from 'http'
+import { checkinWebSocket } from "./middleware/checkinWebSocket.js";
 
 dotenv.config();
 
 const app = express();
-const server = http.createServer(app)
 const PORT = 5000;
 
 app.use(express.json());
@@ -59,8 +56,9 @@ app.get("/api/v1/habits/:id/checkin", checkinReport) //done
 app.get("/api/v1/progress/:id", checkinProgress) //done
 
 
-app.listen(PORT,() => {
-    console.log(`Server is running on port ${PORT}`); 
+
+const server = app.listen(PORT,() => {
+  console.log(`Server is running on port ${PORT}`); 
     // checkinHandler()
     // cron.schedule(`0 8 */1 * *`,
     // checkinHandler,
@@ -71,3 +69,4 @@ app.listen(PORT,() => {
     
 });
 
+checkinWebSocket(server)

@@ -28,12 +28,12 @@ export const auth = async ({email, password}) => {
 
 // ----------------------
 // check current active user and return user_id
-// if none, return please login
+// if none, return null
 // ----------------------
 export const checksession = (req) => {
-  if(req.session.user_id){
+  try {
     return req.session.user_id
-  }else{
+  } catch (error) {
     return null
   }
 }

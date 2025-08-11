@@ -18,6 +18,7 @@ import { DeleteButton } from '../component/DeleteButton'
 import ModalConfirm from '../component/ModalConfirm'
 import { EditButton } from '../component/EditButton'
 import { useUserStore } from '../middleware/useUserStore'
+import useWebSocket from '../middleware/webSocketHook.js'
 
 
 const Home = () => {
@@ -165,12 +166,17 @@ const Home = () => {
     
   }
 
+  const ws = useWebSocket({
+      socketUrl : `ws://localhost:5000`
+  });
+
 
   useEffect(() => {
     if(success){
         ToastSuccess("Logged In!")
         window.history.replaceState({}, '');
     }
+    console.log(ws);
   },[])
   
   return (

@@ -24,7 +24,6 @@ model habits {
   title          String
   description    String?
   time           String           @default("08:00")
-  expression  String
   frequency      frequency        @default(DAILY)
   created_at     DateTime
   updated_at     DateTime         @default(now())
@@ -39,7 +38,7 @@ model habit_checkins {
   habit_id         Int      @map("habit_id")
   checkin_datetime DateTime 
   completed        Boolean  @default(false)
-  habit            habits   @relation(fields: [habit_id], references: [id])
+  habit            habits   @relation(fields: [habit_id], references: [id], onDelete: Cascade)
 }
 
 model badges {

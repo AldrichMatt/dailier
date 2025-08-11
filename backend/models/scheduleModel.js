@@ -1,30 +1,23 @@
 import cron from 'node-cron'
 
 export const expressionGenerator = (req) => {
-    const type = req.body.type
-    const expression = ''
+    const type = req.body.frequency
     switch (type) {
-        case "minute":
-            expression = minuteCron(req.body.minute, res)
-            break;
-        case "hour" : 
-            expression = hourCron(req.body.hour, req.body.minute, res)
-            break;
-        case "day" : 
-            expression = dayCron(req.body.day, req.body.hour, req.body.minute, res)
-            break;
-        case "week" :
-            expression = weekCron(req.body.month, req.body.day, req.body.hour, req.body.minute, res)
-            break;
-        case "month" :
-            expression = monthCron(req.body.month, req.body.day, req.body.hour, req.body.minute, res)
-            break;
-        case "year" :
-            expression = yearCron(req.body.day, req.body.hour, req.body.minute, res)
-            break;
+        case "MINUTE":
+            return minuteCron(req.body.minute)
+        case "HOURLY" : 
+            return hourCron(req.body.hour, req.body.minute)
+        case "DAILY" : 
+            return dayCron(req.body.day, req.body.hour, req.body.minute)
+        case "WEEKLY" :
+            return weekCron(req.body.month, req.body.day, req.body.hour, req.body.minute)
+        case "MONTHLY" :
+            return monthCron(req.body.month, req.body.day, req.body.hour, req.body.minute)
+        case "YEARLY" :
+            return yearCron(req.body.day, req.body.hour, req.body.minute)
         default:
-            break;
-    }    
+            return ""
+    }
 }
 
 const minuteCron = (minuteInterval) => {
@@ -49,7 +42,7 @@ const hourCron = (hourInterval, minute = '0') => {
     `
 }
 
-const dayCron = (dayInterval, hour = '8', minute = '0') => {
+const dayCron = (dayInterval = '1', hour = '8', minute = '0') => {
     //every _ day at hour _ at minute _ or 8AM everyday
     return `
         ${minute} 
