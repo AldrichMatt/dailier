@@ -18,7 +18,7 @@ export default function FormModal({title, onClose, children, handleSubmit}) {
           data-leave:ease-in"
         />
         <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
-          <div className="flex sm:min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+          <div className="flex sm:min-h-full items-center justify-center p-4 text-center sm:items-center sm:p-0">
           <form onSubmit={handleSubmit}>
             <DialogPanel
               transition

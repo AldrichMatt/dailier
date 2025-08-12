@@ -3,7 +3,7 @@ import { persist } from "zustand/middleware";
 
 export const useHabitStore = create(persist(
     (set) => ({
-        habits : null,
+        habits : [],
         setHabits : (habitsData) => set({ habits : habitsData }),
         clearHabits : () => set({ habits : null })
     }),

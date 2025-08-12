@@ -39,6 +39,7 @@ export default function useWebSocket({
       // receive messages
       ws.onmessage = (event) => {
         const msg = formatMessage(event.data);
+        console.log(event.data);
         setData({ message: msg, timestamp: getTimestamp() });
       };
     };
@@ -61,6 +62,7 @@ export default function useWebSocket({
             }
         }
   // retry dependency here triggers the connection attempt
+  // eslint-disable-next-line
   }, [retry]); 
 
   return { send, data, readyState };

@@ -16,14 +16,12 @@ export const fetchHabits = async (setHabits) => {
           }
 }
 
-export const useAuthGuard = () => {
+export const  useAuthGuard = () => {
   const navigate = useNavigate();
   const setUser = useUserStore(state => state.setUser)
   const setHabits = useHabitStore(state => state.setHabits)
   
   useEffect(() => {
-    console.log('authguard trigerred!');
-    
     const verifySession = async () => {
       try {
         const res = await axios.get(`${BASE_URL}/users/check`, {
@@ -41,7 +39,7 @@ export const useAuthGuard = () => {
           }); 
         }else if(user && user_id){
           setUser(user)
-          console.log(await fetchHabits(setHabits))
+          await fetchHabits(setHabits)
         }
       } catch (error) {
         console.error("Error checking session:", error);
@@ -50,5 +48,5 @@ export const useAuthGuard = () => {
     };
 
     verifySession();
-  }, [navigate, setHabits, setUser]);
+  }, [navigate]);
 };
