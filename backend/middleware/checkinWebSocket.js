@@ -38,9 +38,10 @@ export function sendToUser(user_id, payload){
     if (client && client.readyState === WebSocket.OPEN) {
         if(payload.length != 0){
             try {
+                console.log(payload);
                 client.send(JSON.stringify(payload));
             } catch (error) {
-                
+                console.log(error);
             }
         }else{
 

@@ -39,8 +39,9 @@ export default function useWebSocket({
       // receive messages
       ws.onmessage = (event) => {
         const msg = formatMessage(event.data);
-        console.log(event.data);
+        console.log(msg);
         setData({ message: msg, timestamp: getTimestamp() });
+        return data
       };
     };
 

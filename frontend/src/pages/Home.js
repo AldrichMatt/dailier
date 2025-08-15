@@ -90,7 +90,8 @@ const Home = () => {
   }
 
   const findHabit = (habit_id) => {
-    console.log(habit_id)
+    console.log(habit_id);
+    
     for (let i = 0; i < habits.length; i++) {
       const id = habits[i]["id"];
       if (id === habit_id) {
@@ -170,14 +171,12 @@ const Home = () => {
   const ws = useWebSocket({
       socketUrl : `ws://localhost:5000`
   });
-
-
+  
   useEffect(() => {
     if(success){
         ToastSuccess("Logged In!")
         window.history.replaceState({}, '');
-    }
-    console.log(ws);
+    } 
   },[])
   
   return (
