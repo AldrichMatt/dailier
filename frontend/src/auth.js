@@ -16,6 +16,10 @@ export const fetchHabits = async (setHabits) => {
           }
 }
 
+export const fetchCheckins = async (setCheckins) => {
+  const checkins = await axios.get(`${BASE_URL}/`)
+}
+
 export const  useAuthGuard = () => {
   const navigate = useNavigate();
   const setUser = useUserStore(state => state.setUser)

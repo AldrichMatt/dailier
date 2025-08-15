@@ -4,7 +4,7 @@ import { loginUser, getUsers, newUser, updateUser, deleteUser, checkUser, logout
 import { deleteHabit, getHabits, newHabit, updateHabit } from "./controllers/habitController.js";
 import session from "express-session";
 import dotenv from 'dotenv';
-import { checkinReport, checkinProgress, checkinHandler } from "./controllers/checkinController.js";
+import { checkinReport, checkinProgress, checkinHandler, getCheckinbyUser } from "./controllers/checkinController.js";
 import cookieParser from "cookie-parser";
 import { refreshsession } from "./controllers/authController.js";
 import { checkinWebSocket } from "./middleware/checkinWebSocket.js";
@@ -47,6 +47,8 @@ app.post("/habits/update", updateHabit)
 app.post("/api/v1/signup", newUser) //done
 app.post("/api/v1/login", loginUser) //done
 app.get("/api/v1/logout", logout) //done
+
+app.get("/api/v1/checkins", getCheckinbyUser)
 
 app.get("/api/v1/habits", getHabits) //done
 app.post("/api/v1/habits", newHabit) //done

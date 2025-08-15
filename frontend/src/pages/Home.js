@@ -225,7 +225,49 @@ const Home = () => {
       <div className="relative isolate px-6 py-10 lg:px-8">
       <Row> 
         <Card title={"Checkin"} description={"Your habit checkin of the day"}>
-          test
+          <table className='relative table-auto'>
+            <thead className='border-b border-gray-600'>
+              <tr className='text-left'>
+                <th>#</th>
+                <th>Name</th>
+                <th>Frequency</th>
+                <th>Time</th>
+                <th className='text-center'>Action</th>
+              </tr>
+            </thead>
+            <tbody key={key}>
+              {habits.map((item) => (
+                <tr className='border-b-2 border-violet-400'>
+                  <td>{habitCount++}</td>
+                  <td>{item.title}</td>
+                  <td>{item.frequency}</td>
+                  <td>{item.time}</td>
+                  <td className='text-center py-2'>
+                    <div className='
+                    flex
+                    flex-row
+                    flex-shrink
+                    flex-grow
+                    justify-center
+                    h-full
+                    align-middle
+                    '>
+                    <DeleteButton onClick={() => {
+                      setHabitId(item.id)
+                      confirmModal()
+                      }}/>
+                    <EditButton onClick={() => {
+                      setHabitId(item.id)
+                      setModalState("edit")
+                      setEdit(item.id)
+                      habitModal()
+                    }}/>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </Card>
         <Card title={"Chart"} description={"See your performance"}></Card>
       </Row>
@@ -245,6 +287,7 @@ const Home = () => {
         }}><PlusCircleIcon className='size-5'></PlusCircleIcon></button>
       }
         >
+          {/* HABIT TABLE */}
           <table className='relative table-auto'>
             <thead className='border-b border-gray-600'>
               <tr className='text-left'>

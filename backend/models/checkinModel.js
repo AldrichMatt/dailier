@@ -59,6 +59,8 @@ export const getAll = async () => {
 export const getByHabitId = async (id) => {
     return await prisma.habit_checkins.findMany({
         select : {
+            id : true,
+            habit_id : true,
             checkin_datetime : true,
             completed : true
         },
@@ -84,3 +86,4 @@ export const getSpecial = async (req) => {
         }
     })
 }
+

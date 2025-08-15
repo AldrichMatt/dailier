@@ -1,6 +1,6 @@
 import { checkinComplete, getByHabitId, getSpecial } from "../models/checkinModel.js"
-import { getHabitbyFrequency } from "../models/habitModel.js";
-import { expressionGenerator } from "../models/scheduleModel.js";
+import { getAllHabitByUserId, getHabitbyFrequency } from "../models/habitModel.js";
+import { checksession } from "./authController.js";
 import { checkUser } from "./userController.js"
 
 // ----------------------
@@ -48,7 +48,7 @@ export const checkinProgress = async (req, res) => {
 
 }
 
-// ----------------------
+// ---------------------- TO DO
 // create new checkin
 // this function will be used automatically by cron 
 // so don't set the header result
@@ -62,4 +62,30 @@ export const checkinHandler = async () => {
     // const weeklyHabits = await getHabitbyFrequency("WEEKLY")
     // const monthlyHabits = await getHabitbyFrequency("MONTHLY")
     // const yearlyHabits = await getHabitbyFrequency("YEARLY")
+}
+
+export const getCheckinbyUser = async (req, res) => {
+
+    const user_id = checksession(req)
+    if(user_id){
+        try {
+            
+            const habits = await getAllHabitByUserId(user_id)
+            
+            const checkins = await Promise.all(
+                habits.map(habit => getByHabitId(habit.id))
+            )
+            res.json(checkins.flat())
+        } catch (error) {
+            console.log(error);
+            res.json({
+                message : error
+            })   
+        }
+    }else{
+        return res.json({
+            message : "Please login first"
+        })
+    }
+
 }

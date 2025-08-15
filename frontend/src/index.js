@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
-import Register from './pages/register';
+import Register from './pages/Register';
 import './style.css';
 import Logout from './pages/Logout';
 import { SessionPing } from './middleware/SessionPing';
