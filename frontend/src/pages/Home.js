@@ -63,7 +63,7 @@ const Home = () => {
       const res = axios.post(`${BASE_URL}/api/v1/habits`,
         {
           title : title, 
-          frequency : frequency.toUpperCase(), 
+          frequency : frequency, 
           time : time, 
           description : description
         },{
@@ -201,7 +201,7 @@ const Home = () => {
             name="frequency"
             className="outline-none w-full"
             value={frequency}
-            onChange={(e) => setFrequency(e.target.value)}>
+            onChange={(e) => setFrequency(e.target.value.toUpperCase())}>
               <option value="DAILY">Daily</option>
               <option value="WEEKLY">Weekly</option>
               <option value="MONTHLY">Monthly</option>
