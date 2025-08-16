@@ -62,7 +62,10 @@ const Home = () => {
     try {
       const res = axios.post(`${BASE_URL}/api/v1/habits`,
         {
-          title, frequency : frequency.toUpperCase(), time, description
+          title : title, 
+          frequency : frequency.toUpperCase(), 
+          time : time, 
+          description : description
         },{
           headers : {
             "Content-Type" : 'application/json'
