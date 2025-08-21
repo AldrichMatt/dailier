@@ -1,6 +1,6 @@
 import { PlusCircleIcon } from '@heroicons/react/24/outline'
 import { useEffect, useState } from "react"
-import { fetchHabits, useAuthGuard } from "../auth"
+import { fetchCheckins, fetchHabits, useAuthGuard } from "../auth"
 import { Nav } from '../component/Navbar'
 import { Row } from '../component/Row'
 import { Card } from '../component/Card'
@@ -14,21 +14,24 @@ import SelectInput from '../component/SelectInput'
 import { BASE_URL } from '../auth'
 import axios from 'axios'
 import { ToastWarning } from '../component/ToastWarning'
-import { DeleteButton } from '../component/DeleteButton'
 import ModalConfirm from '../component/ModalConfirm'
-import { EditButton } from '../component/EditButton'
 import { useUserStore } from '../middleware/useUserStore'
 import useWebSocket from '../middleware/webSocketHook.js'
+import { useCheckinStore } from '../middleware/useCheckinStore.js'
+import { formatDate } from '../middleware/DateFormat.js'
+import { ButtonType } from '../component/Button.js'
 
 
 const Home = () => {
-  
   const habits = useHabitStore(state => state.habits)
   const user = useUserStore(state => state.user)
+  const checkins = useCheckinStore(state => state.checkins)
+
   const user_id = user.id
   const location = useLocation()
   const success = location.state?.success
   const setHabits = useHabitStore(state => state.setHabits)
+  const setCheckins = useCheckinStore(state => state.setCheckins)
   const navigate = useNavigate();
   
   useAuthGuard();
@@ -47,8 +50,6 @@ const Home = () => {
 
   const habitModal = () => addHabitModal ? showHabitModal(false) : showHabitModal(true)
   const confirmModal = () => addConfirmModal ? showConfirmModal(false) : showConfirmModal(true)
-
-  var habitCount = 1;
 
   const clearForm = () => {
     setTitle('')
@@ -93,8 +94,6 @@ const Home = () => {
   }
 
   const findHabit = (habit_id) => {
-    console.log(habit_id);
-    
     for (let i = 0; i < habits.length; i++) {
       const id = habits[i]["id"];
       if (id === habit_id) {
@@ -162,9 +161,9 @@ const Home = () => {
         ToastSuccess((await res).data.message)
         confirmModal()
       }
-
-      setKey(key + 1)
+      await fetchCheckins(setCheckins)
       await fetchHabits(setHabits)
+      setKey(key + 1)
     }catch(error){
       console.log(error);
     }
@@ -174,7 +173,6 @@ const Home = () => {
   const ws = useWebSocket({
       socketUrl : `ws://localhost:5000`
   });
-  
   useEffect(() => {
     if(success){
         ToastSuccess("Logged In!")
@@ -227,24 +225,25 @@ const Home = () => {
     <Nav></Nav>
       <div className="relative isolate px-6 py-10 lg:px-8">
       <Row> 
-        <Card title={"Checkin"} description={"Your habit checkin of the day"}>
+        <Card title={"Checkin"} 
+        description={"Your habit checkin of the day"}>
           <table className='relative table-auto'>
             <thead className='border-b border-gray-600'>
               <tr className='text-left'>
                 <th>#</th>
-                <th>Name</th>
-                <th>Frequency</th>
+                <th>Habit Name</th>
+                <th>Time</th>
                 <th>Time</th>
                 <th className='text-center'>Action</th>
               </tr>
             </thead>
             <tbody key={key}>
-              {habits.map((item) => (
+              {checkins.map((item, count) => (
                 <tr className='border-b-2 border-violet-400'>
-                  <td>{habitCount++}</td>
-                  <td>{item.title}</td>
-                  <td>{item.frequency}</td>
-                  <td>{item.time}</td>
+                  <td>{count+1}</td>
+                  <td>{findHabit(item.habit_id).title}</td>
+                  <td>{formatDate(item.checkin_datetime)}</td>
+                  <td>{item.completed}</td>
                   <td className='text-center py-2'>
                     <div className='
                     flex
@@ -255,16 +254,10 @@ const Home = () => {
                     h-full
                     align-middle
                     '>
-                    <DeleteButton onClick={() => {
+                    <ButtonType type={"confirm"} onClick={() => {
                       setHabitId(item.id)
                       confirmModal()
                       }}/>
-                    <EditButton onClick={() => {
-                      setHabitId(item.id)
-                      setModalState("edit")
-                      setEdit(item.id)
-                      habitModal()
-                    }}/>
                     </div>
                   </td>
                 </tr>
@@ -275,8 +268,7 @@ const Home = () => {
         <Card title={"Chart"} description={"See your performance"}></Card>
       </Row>
       <Row>
-        <Card 
-        title={"Habits"}
+        <Card title={"Habits"}
         description={"Manage your habit(s) here"}
         action={
         <button 
@@ -302,9 +294,9 @@ const Home = () => {
               </tr>
             </thead>
             <tbody key={key}>
-              {habits.map((item) => (
+              {habits.map((item, count) => (
                 <tr className='border-b-2 border-violet-400'>
-                  <td>{habitCount++}</td>
+                  <td>{count+1}</td>
                   <td>{item.title}</td>
                   <td>{item.frequency}</td>
                   <td>{item.time}</td>
@@ -318,11 +310,11 @@ const Home = () => {
                     h-full
                     align-middle
                     '>
-                    <DeleteButton onClick={() => {
+                    <ButtonType type="delete" onClick={() => {
                       setHabitId(item.id)
                       confirmModal()
                       }}/>
-                    <EditButton onClick={() => {
+                    <ButtonType type="edit" onClick={() => {
                       setHabitId(item.id)
                       setModalState("edit")
                       setEdit(item.id)

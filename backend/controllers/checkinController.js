@@ -69,16 +69,17 @@ export const getCheckinbyUser = async (req, res) => {
     const user_id = checksession(req)
     if(user_id){
         try {
-            
             const habits = await getAllHabitByUserId(user_id)
-            
-            const checkins = await Promise.all(
+            const checkinsData = await Promise.all(
                 habits.map(habit => getByHabitId(habit.id))
             )
-            res.json(checkins.flat())
+            console.log(checkinsData.flat());
+            res.json({
+                checkins : checkinsData.flat()
+            })
         } catch (error) {
             console.log(error);
-            res.json({
+            return res.json({
                 message : error
             })   
         }
