@@ -7,8 +7,8 @@ import { sendToUser } from "../middleware/checkinWebSocket.js";
 // 
 // ----------------------
 export const getHabits = async (req, res) => {
-    const user_id = checksession(req);
-    console.log(user_id);
+
+    const user_id = checksession(req);    
     if(user_id){
         const habitsData = await getAllHabitByUserId(user_id);
         return res.json({
