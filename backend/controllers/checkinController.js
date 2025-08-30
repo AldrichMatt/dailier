@@ -1,29 +1,33 @@
-import { checkinComplete, getByHabitId, getSpecial } from "../models/checkinModel.js"
+import { formatCheckinDatetime } from "../models/abstract.js";
+import { checkinComplete, createCheckin, getByHabitId, getNotCompletedCheckinbyHabit, getSpecial } from "../models/checkinModel.js"
 import { getAllHabitByUserId, getHabitbyFrequency } from "../models/habitModel.js";
 import { checksession } from "./authController.js";
-import { checkUser } from "./userController.js"
 
 // ----------------------
-// return and set one checkin data to completed
+// return habit_id, checkin_datetime and completed, and set one checkin data to completed
 // else return Habit doesn't exist
 // ----------------------
 export const checkinReport = async (req, res) => {
     //Authenticating user
-    checkUser(req, res);
-    
-    //get habit based on user and habit
-    const habit = await getSpecial(req)
-    
-    if(habit != null){
-        //set completed to true in checkin
-        const data = await checkinComplete(habit.id);
-        res.json(data)
-    }else{
-        //if no habit checkins found under habit and user
-        res.json({
-            message : "Habit doesn't exist"
+    if(!checksession(req)){
+        return res.json({
+            message : "Please login first"
         })
     }
+    
+    try {
+        //set completed to true in checkin
+        const data = await checkinComplete(parseInt(req.params.id));
+        res.json(data)
+    } catch (error) {
+        //if no habit checkins found under habit and user
+        res.json({
+            message : error
+        })
+        console.log(error);
+        
+    }
+
     
 }
 
@@ -33,7 +37,11 @@ export const checkinReport = async (req, res) => {
 // ----------------------
 export const checkinProgress = async (req, res) => {
     //Authenticating user
-    checkUser(req, res)
+    if(!checksession(req)){
+        return res.json({
+            message : "Please login first"
+        })
+    }
 
     const habit_id = parseInt(req.params.id)
     const progress = await getByHabitId(habit_id)
@@ -48,11 +56,12 @@ export const checkinProgress = async (req, res) => {
 
 }
 
-// ---------------------- TO DO
-// create new checkin
-// this function will be used automatically by cron 
-// so don't set the header result
-// ----------------------
+/**
+ * TO DO
+ * create new checkin based in frequency when day start
+ * this function will be used automatically by cron 
+ * so don't set the header result
+*/
 export const checkinHandler = async () => {
     const dailyHabits = await getHabitbyFrequency("DAILY")
     
@@ -64,16 +73,44 @@ export const checkinHandler = async () => {
     // const yearlyHabits = await getHabitbyFrequency("YEARLY")
 }
 
+/**
+ * create new checkin by habit
+ * @param {*} habit 
+ * @returns new checkin data
+ */
+export const newCheckinbyHabit = async (habit) => {
+    const {id, time} = habit
+    const formattedTime = formatCheckinDatetime(time)
+
+    const date = new Date().toISOString().valueOf(formattedTime)
+
+    try {
+        const result = await createCheckin(id, date)
+        console.log(result);
+    } catch (error) {
+        return console.log(error)
+    }
+}
+
 export const getCheckinbyUser = async (req, res) => {
 
     const user_id = checksession(req)
     if(user_id){
         try {
+            //find habit(s) related to user
             const habits = await getAllHabitByUserId(user_id)
-            const checkinsData = await Promise.all(
-                habits.map(habit => getByHabitId(habit.id))
-            )
-            console.log(checkinsData.flat());
+
+            var checkinsData;
+            //find checkin(s) related to the habit(s) above
+            if(!req.params.completed){
+                checkinsData = await Promise.all(
+                    habits.map(habit => getByHabitId(habit.id))
+                )
+            }else{
+                checkinsData = await Promise.all(
+                    habits.map(habit => getNotCompletedCheckinbyHabit(habit.id))
+                )
+            }
             res.json({
                 checkins : checkinsData.flat()
             })

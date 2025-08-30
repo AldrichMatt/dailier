@@ -1,4 +1,4 @@
-import { PlusCircleIcon } from '@heroicons/react/24/outline'
+import { CircleStackIcon, DocumentIcon, InformationCircleIcon, PlusCircleIcon } from '@heroicons/react/24/outline'
 import { useEffect, useState } from "react"
 import { fetchCheckins, fetchHabits, useAuthGuard } from "../auth"
 import { Nav } from '../component/Navbar'
@@ -61,7 +61,7 @@ const Home = () => {
   const addHabit = async (e) => {
     e.preventDefault();
     try {
-      const res = axios.post(`${BASE_URL}/api/v1/habits`,
+      const res = await axios.post(`${BASE_URL}/api/v1/habits`,
         {
           title : title, 
           frequency : frequency.toUpperCase(), 
@@ -74,14 +74,15 @@ const Home = () => {
           withCredentials : true
         }
       )
-      if ((await res).data.id) {
+      if (res.data.id) {
         habitModal();
         clearForm();
         ToastSuccess("Habit created successfully!");
         setKey(key + 1);
         await fetchHabits(setHabits);
+        await fetchCheckins(setCheckins);
       }else{
-        ToastWarning((await res).data.message)
+        ToastWarning(res.data.message)
         navigate('/',{
           state : {
             warning : "Please login first"
@@ -115,7 +116,7 @@ const Home = () => {
   const editHabit = async (e) => {
     e.preventDefault();
     try {
-      const res = axios.put(`${BASE_URL}/api/v1/habits`,{
+      const res = await axios.put(`${BASE_URL}/api/v1/habits`,{
         habit_id : habit_id,
         user_id : user_id,
         title : title,
@@ -123,13 +124,14 @@ const Home = () => {
         frequency : frequency,
         time : time
       })
-      if ((await res).data.id) {
+      if (res.data.id) {
         habitModal();
         ToastSuccess("Habit edited successfully!");
         setKey(key + 1);
         await fetchHabits(setHabits);
+        await fetchCheckins(setCheckins)
       }else{
-        ToastWarning((await res).data.message)
+        ToastWarning(res.data.message)
         navigate('/',{
           state : {
             warning : "Please login first"
@@ -143,31 +145,46 @@ const Home = () => {
 
   const handleDelete = async (id) => {
     try{
-      const res = axios.delete(`${BASE_URL}/api/v1/habits`,{
+      const res = await axios.delete(`${BASE_URL}/api/v1/habits`,{
         data :{
           habit_id : id
         },
         withCredentials : true
       })
-      if((await res).data.code){
-        (await res).data.code === 401 ?
+      if(res.data.code){
+        res.data.code === 401 ?
         navigate('/',{
           state : {
-            warning : (await res).data.message
+            warning : res.data.message
           }
         })  :
-        ToastWarning(`${(await res).data.message.cause} please try again`)
+        ToastWarning(`${res.data.message.cause} please try again`)
       }else{
-        ToastSuccess((await res).data.message)
+        ToastSuccess(res.data.message)
         confirmModal()
       }
-      await fetchCheckins(setCheckins)
-      await fetchHabits(setHabits)
+      await fetchHabits(setHabits);
+      await fetchCheckins(setCheckins);
       setKey(key + 1)
     }catch(error){
       console.log(error);
     }
     
+  }
+
+  const checkinConfirm = async (id) => {
+    try {
+      const res = await axios.get(`${BASE_URL}/api/v1/habits/${id}/checkin`,{
+        withCredentials : true
+      })
+      let title = findHabit(res.data.habit_id).title
+      ToastSuccess(`${title} completed today!`)
+      setKey(key + 1);
+      await fetchCheckins(setCheckins);
+    } catch (error) {
+      // ToastWarning(error)
+      console.log(error)
+    }
   }
 
   const ws = useWebSocket({
@@ -226,13 +243,23 @@ const Home = () => {
       <div className="relative isolate px-6 py-10 lg:px-8">
       <Row> 
         <Card title={"Checkin"} 
-        description={"Your habit checkin of the day"}>
+        description={"Your habit checkin of the day"}
+        action={
+          <button 
+        className='rounded-2xl
+        shadow-md
+        hover:bg-gray-400'
+        onClick={() => {
+          navigate('/checkinReport',{
+        })
+      }}><InformationCircleIcon className='size-5'></InformationCircleIcon></button>
+        }
+        >
           <table className='relative table-auto'>
             <thead className='border-b border-gray-600'>
               <tr className='text-left'>
                 <th>#</th>
                 <th>Habit Name</th>
-                <th>Time</th>
                 <th>Time</th>
                 <th className='text-center'>Action</th>
               </tr>
@@ -241,9 +268,8 @@ const Home = () => {
               {checkins.map((item, count) => (
                 <tr className='border-b-2 border-violet-400'>
                   <td>{count+1}</td>
-                  <td>{findHabit(item.habit_id).title}</td>
-                  <td>{formatDate(item.checkin_datetime)}</td>
-                  <td>{item.completed}</td>
+                  <td>{findHabit(item.habit_id) ? findHabit(item.habit_id).title : null}</td>
+                  <td>{findHabit(item.habit_id) ? findHabit(item.habit_id).time : null}</td>
                   <td className='text-center py-2'>
                     <div className='
                     flex
@@ -255,8 +281,7 @@ const Home = () => {
                     align-middle
                     '>
                     <ButtonType type={"confirm"} onClick={() => {
-                      setHabitId(item.id)
-                      confirmModal()
+                      checkinConfirm(item.id)
                       }}/>
                     </div>
                   </td>

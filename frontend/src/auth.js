@@ -18,7 +18,7 @@ export const fetchHabits = async (setHabits) => {
 }
 
 export const fetchCheckins = async (setCheckins) => {
-  const checkins = await axios.get(`${BASE_URL}/api/v1/checkins`,{
+  const checkins = await axios.get(`${BASE_URL}/api/v1/checkins/false`,{
     withCredentials : true
   })
   console.log(checkins);

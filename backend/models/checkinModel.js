@@ -27,14 +27,14 @@ export const createCheckin = async (habit_id, checkin_datetime) => {
 // habit checkin record update completed to true
 //
 // ----------------------
-export const checkinComplete = async (habit_id) => {
+export const checkinComplete = async (checkin_id) => {
     return await prisma.habit_checkins.update({
         data : {
             checkin_datetime : getTimestamps().updated_at,
             completed : true
         },
         where : {
-            id : habit_id
+            id : checkin_id
         },
         select : {
             habit_id : true,
@@ -87,3 +87,17 @@ export const getSpecial = async (req) => {
     })
 }
 
+export const getNotCompletedCheckinbyHabit = async (id) =>{
+    return await prisma.habit_checkins.findMany({
+        select : {
+            id : true,
+            habit_id : true,
+            checkin_datetime : true,
+            completed : true
+        },
+        where : {
+            completed : false,
+            habit_id : id
+        }
+    })
+}

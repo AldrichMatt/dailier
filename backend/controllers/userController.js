@@ -1,9 +1,6 @@
 import { auth, checksession, destroysession, encrypt } from "./authController.js";
 import { getAll, create, update, getUserById, remove } from "../models/userModel.js";
 import { userSchema } from "../schema/user.js";
-import pkg from 'joi';
-
-const { optional } = pkg
 
 // ----------------------
 // used to check active user in session
@@ -82,28 +79,29 @@ export const loginUser = async (req, res) => {
 
 }
 
-// ----------------------
-// log user out and destroy user_id property from session
-// 
-// ----------------------
+/**
+ * log user out and destroy user_id property from session
+ * @param {*} req 
+ * @param {*} res 
+ */
 export const logout = (req, res) => {
     destroysession(req, res);
 }
 
-// ----------------------
-// get all user data
-// 
-// ----------------------
-export const getUsers = async (req,res) => {
+/**
+ * get all user data
+ * @param {*} res 
+ */
+export const getUsers = async (res) => {
     const userData = await getAll();
     res.json(userData);
 }
 
-// !! ADD ENCYRPTION !!
-// ----------------------
-// create new user, email and username are unique
-// 
-// ----------------------
+/**
+ * create new user, email and username are unique
+ * @param {*} req 
+ * @param {*} res 
+ */
 export const newUser = async (req, res) => {
     const {username, email, password, repassword} = req.body;
 
@@ -118,7 +116,6 @@ export const newUser = async (req, res) => {
         res.json(validate.error.details[0])
     }else{
         try {
-            const hashedpass = encrypt(password);
             const user = await create(username, email, hashedpass)
             res.cookie('session_id', user.id, {
                 path : '/',

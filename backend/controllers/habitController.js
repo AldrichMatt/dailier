@@ -1,6 +1,7 @@
 import { create, getAllHabitByUserId, getHabitById, remove, update} from "../models/habitModel.js";
 import { checksession } from "./authController.js";
 import { sendToUser } from "../middleware/checkinWebSocket.js";
+import { newCheckinbyHabit } from "./checkinController.js";
 
 // ----------------------
 // return all habits
@@ -33,7 +34,10 @@ export const newHabit = async (req, res) => {
     if(user_id){
         try {
                 const result = await create(user_id, title, description, time, frequency)
-                sendToUser(user_id, result)
+                //create function from checkinController to create checkin
+                // sendToUser(user_id, result)
+                console.log(time);
+                newCheckinbyHabit(result)
                 return res.json(result);
             } catch (error) {
                 console.log(error);
