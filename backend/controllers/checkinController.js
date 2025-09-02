@@ -81,11 +81,9 @@ export const checkinHandler = async () => {
 export const newCheckinbyHabit = async (habit) => {
     const {id, time} = habit
     const formattedTime = formatCheckinDatetime(time)
-
-    const date = new Date().toISOString().valueOf(formattedTime)
-
+    
     try {
-        const result = await createCheckin(id, date)
+        const result = await createCheckin(id, formattedTime)
         console.log(result);
     } catch (error) {
         return console.log(error)

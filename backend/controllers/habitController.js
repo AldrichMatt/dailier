@@ -37,6 +37,7 @@ export const newHabit = async (req, res) => {
                 //create function from checkinController to create checkin
                 // sendToUser(user_id, result)
                 console.log(time);
+                // send habit to newCheckinbyHabit
                 newCheckinbyHabit(result)
                 return res.json(result);
             } catch (error) {

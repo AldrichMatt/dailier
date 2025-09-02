@@ -261,7 +261,7 @@ const Home = () => {
                 <th>#</th>
                 <th>Habit Name</th>
                 <th>Time</th>
-                <th className='text-center'>Action</th>
+                <th className='text-center'>Checkinw</th>
               </tr>
             </thead>
             <tbody key={key}>
