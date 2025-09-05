@@ -43,7 +43,7 @@ export const newHabit = async (req, res) => {
             } catch (error) {
                 console.log(error);
                 return res.json({
-                        message : error.meta,
+                        message : error.meta? error.meta : error,
                         code : error.code
                 })
             }
@@ -68,7 +68,7 @@ export const updateHabit = async (req, res) => {
             return res.json(await update(habit_id, title, description, time, frequency));
         } catch (error) {
             return res.json({
-                message : error.meta,
+                message : error.meta? error.meta : error,
                 code : error.code
             })
         }
@@ -97,7 +97,7 @@ export const deleteHabit = async (req, res) => {
             })
         }catch (error) {
             return res.json({
-                message : error.meta,
+                message : error.meta? error.meta : error,
                 code : error.code
             })
         }

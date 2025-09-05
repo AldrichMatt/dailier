@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import webpush from 'web-push'
 import { loginUser, getUsers, newUser, updateUser, deleteUser, checkUser, logout } from "./controllers/userController.js";
 import { deleteHabit, getHabits, newHabit, updateHabit } from "./controllers/habitController.js";
 import session from "express-session";
@@ -9,6 +10,7 @@ import cookieParser from "cookie-parser";
 import { refreshsession } from "./controllers/authController.js";
 import { checkinWebSocket } from "./middleware/checkinWebSocket.js";
 import { formatCheckinDatetime } from "./models/abstract.js";
+import { subscriptionHandshake } from "./controllers/webPushController.js";
 
 dotenv.config();
 
@@ -32,6 +34,12 @@ app.use(session({
     secure: false // set true kalau pakai HTTPS
   }
 }));
+
+webpush.setVapidDetails(
+  process.env.VAPID_SUBJECT,
+  process.env.VAPID_PUBLIC_KEY,
+  process.env.VAPID_PRIVATE_KEY
+)
 
 // REQUESTS FOR ADMIN
 app.get("/users", getUsers)
@@ -58,7 +66,11 @@ app.put("/api/v1/habits", updateHabit) //done
 app.get("/api/v1/habits/:id/checkin", checkinReport) //done
 app.get("/api/v1/progress/:id", checkinProgress) //done
 
+app.post("/api/subscribe", subscriptionHandshake)
+
 app.post("/test/dateFormat", formatCheckinDatetime)
+app.get("/test/webpush", )
+
 
 
 

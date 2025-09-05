@@ -165,7 +165,7 @@ export const updateUser = async (req, res) => {
             res.json(await update(user_id, username, email, hashedpass));
         } catch (error) {
             res.json({
-                "message" : error.meta,
+                "message" : error.meta? error.meta : error,
                 "code" : error.code
             })
             console.log(error);
@@ -193,7 +193,7 @@ export const deleteUser = async (req, res) => {
         })
     } catch (error) {
          res.json({
-            message : error.meta,
+            message : error.meta? error.meta : error,
             code : error.code
         })
     }

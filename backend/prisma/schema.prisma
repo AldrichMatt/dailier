@@ -16,6 +16,7 @@ model users {
   updated_at DateTime @default(now())
   badges     badges[]
   habits     habits[]
+  subscription subscription[]
 }
 
 model habits {
@@ -48,6 +49,17 @@ model badges {
   earned_at DateTime @default(now())
   image     String
   user      users    @relation(fields: [user_id], references: [id])
+}
+
+model subscription {
+  id             Int @id @default(autoincrement())
+  user_id        Int @map("user_id")
+  endpoint       String
+  p256dh         String
+  auth           String
+  created_at     DateTime
+
+  user users @relation(fields: [user_id], references: [id])
 }
 
 enum frequency {
