@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { getTimestamps } from "./abstract";
+import { getTimestamps } from "./abstract.js";
 
 const prisma = new PrismaClient();
 
@@ -15,7 +15,21 @@ export const createSubscription = async (user_id, endpoint, p256dh, auth) => {
             created_at : created_at
         },
         select : {
-            user_id : true
+            user_id : true,
+            endpoint : true
+        }
+    })
+}
+
+export const findSubscription = async (user_id) => {
+    return await prisma.subscription.findFirst({
+        select : {
+            auth : true,
+            endpoint : true,
+            p256dh : true,
+        },
+        where : {
+            user_id : user_id
         }
     })
 }
