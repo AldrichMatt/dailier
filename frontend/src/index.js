@@ -14,6 +14,7 @@ import { subscribeUserToPush } from './middleware/pushSubscription';
 const publicVapidKey = process.env.VAPID_PUBLIC_KEY
 
 export default function App() {
+  // TO DO : fix subscribeUserToPush function, get it out of useEffect, mind the service worker
   useEffect(() => {
     const setupPush = async () => {
       const reg = await registerServiceWorker();
