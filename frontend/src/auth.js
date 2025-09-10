@@ -61,5 +61,5 @@ export const  useAuthGuard = () => {
     };
 
     verifySession();
-  }, [navigate]);
+  }, [navigate, setCheckins, setHabits, setUser]);
 };

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
@@ -8,8 +8,19 @@ import Logout from './pages/Logout';
 import { SessionPing } from './middleware/SessionPing';
 import Login from './pages/Login';
 import Ws from './middleware/Ws';
+import { registerServiceWorker } from './middleware/serviceWorkerRegistration';
+import { subscribeUserToPush } from './middleware/pushSubscription';
+
+const publicVapidKey = process.env.VAPID_PUBLIC_KEY
 
 export default function App() {
+  useEffect(() => {
+    const setupPush = async () => {
+      const reg = await registerServiceWorker();
+      await subscribeUserToPush(reg, publicVapidKey)
+    }
+    setupPush();
+  }, []);
   return (
     <BrowserRouter>
     <Routes>
